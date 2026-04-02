@@ -172,24 +172,26 @@
     .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
   }
 
-  /* VIDEOS */
-  .video-section { background: var(--navy); }
-  .channel-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px; }
-  .ch-tab { font-size: 12px; font-weight: 500; padding: 8px 18px; border-radius: 30px; border: 0.5px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.55); cursor: pointer; transition: all 0.2s; text-decoration: none; background: transparent; }
-  .ch-tab:hover { color: #fff; background: rgba(255,255,255,0.08); }
-  .ch-tab.active { background: var(--green); border-color: var(--green); color: #fff; }
-  .video-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; }
-  .v-card { border-radius: 8px; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
-  .v-card:hover { transform: translateY(-3px); }
-  .v-thumb { position: relative; aspect-ratio: 16/9; background: #0C447C; overflow: hidden; }
-  .v-thumb img { width: 100%; height: 100%; object-fit: cover; }
-  .v-play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.2s; }
-  .v-card:hover .v-play { opacity: 1; }
-  .v-play svg { width: 36px; height: 36px; }
-  .v-body { padding: 10px 0 0; }
-  .v-title { font-size: 12px; font-weight: 500; color: #fff; line-height: 1.4; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .v-date { font-size: 10px; color: rgba(255,255,255,0.4); }
-  .v-empty { font-size: 13px; color: rgba(255,255,255,0.3); text-align: center; padding: 40px; grid-column: 1/-1; }
+  /* WORLD MAP */
+  .map-wrap { position: relative; margin-top: 56px; }
+  .map-container { position: relative; width: 100%; max-width: 720px; margin: 0 auto; }
+  .map-svg { width: 100%; height: auto; }
+  .map-pin { cursor: pointer; }
+  .map-pin circle { transition: r 0.2s, opacity 0.2s; }
+  .map-pin:hover circle.outer { opacity: 0.4; }
+  .map-pin:hover circle.inner { r: 6; }
+  .map-tooltip {
+    position: absolute; background: var(--navy); color: #fff;
+    font-size: 11px; font-weight: 500; padding: 5px 10px; border-radius: 6px;
+    pointer-events: none; white-space: nowrap; z-index: 10;
+    transform: translate(-50%, -100%); margin-top: -8px;
+    border: 0.5px solid rgba(255,255,255,0.15);
+    opacity: 0; transition: opacity 0.15s;
+  }
+  .map-tooltip.show { opacity: 1; }
+  .map-legend { display: flex; gap: 16px; justify-content: center; margin-top: 16px; flex-wrap: wrap; }
+  .map-legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); }
+  .map-legend-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
 </style>
 </head>
 <body>
@@ -205,7 +207,7 @@
     <li><a href="#strategy">Strategy</a></li>
     <li><a href="#history">History</a></li>
     <li><a href="#news">News & Prayer</a></li>
-    <li><a href="#videos">Videos</a></li><li><a href="#gallery">Gallery</a></li>
+    <li><a href="#gallery">Gallery</a></li>
   </ul>
   <a href="#support" class="nav-cta">Support Us</a>
 </nav>
@@ -243,6 +245,114 @@
         <div class="pillar"><span class="pillar-num">Reach</span><div><p class="pillar-title">Philippines · USA · India & Beyond</p><p class="pillar-desc">Active field missions across Asia, Americas, and a growing global network.</p></div></div>
       </div>
     </div>
+
+    <!-- WORLD MAP -->
+    <div class="map-wrap">
+      <p style="font-size:11px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--blue);margin-bottom:16px;text-align:center">Our Mission Fields</p>
+      <div class="map-container">
+        <div id="map-tooltip" class="map-tooltip"></div>
+        <svg class="map-svg" viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg">
+          <!-- Simple world map background -->
+          <rect width="1000" height="500" fill="#EBF4FB" rx="12"/>
+          <!-- Continents simplified -->
+          <!-- North America -->
+          <path d="M80,60 L180,50 L220,80 L240,120 L230,160 L200,180 L170,200 L140,220 L110,200 L80,160 L60,120 Z" fill="#C8DFF0" stroke="#fff" stroke-width="1.5"/>
+          <!-- South America -->
+          <path d="M160,220 L210,210 L240,250 L250,310 L230,370 L200,400 L170,380 L150,320 L140,270 Z" fill="#C8DFF0" stroke="#fff" stroke-width="1.5"/>
+          <!-- Europe -->
+          <path d="M400,40 L480,35 L500,60 L490,90 L460,100 L430,95 L410,75 Z" fill="#C8DFF0" stroke="#fff" stroke-width="1.5"/>
+          <!-- Africa -->
+          <path d="M420,110 L490,100 L520,130 L530,200 L510,280 L480,330 L450,340 L420,300 L400,230 L395,160 Z" fill="#C8DFF0" stroke="#fff" stroke-width="1.5"/>
+          <!-- Asia main -->
+          <path d="M500,30 L700,20 L780,40 L800,80 L780,120 L740,140 L700,130 L660,150 L620,140 L580,120 L540,100 L510,80 L490,60 Z" fill="#C8DFF0" stroke="#fff" stroke-width="1.5"/>
+          <!-- South Asia -->
+          <path d="M580,130 L640,125 L660,160 L640,200 L610,210 L585,185 L570,155 Z" fill="#C8DFF0" stroke="#fff" stroke-width="1.5"/>
+          <!-- SE Asia -->
+          <path d="M660,150 L720,145 L740,175 L720,200 L690,195 L665,175 Z" fill="#C8DFF0" stroke="#fff" stroke-width="1.5"/>
+          <!-- Australia -->
+          <path d="M720,280 L820,265 L850,300 L840,360 L790,385 L730,370 L700,330 L705,290 Z" fill="#C8DFF0" stroke="#fff" stroke-width="1.5"/>
+          <!-- Japan -->
+          <path d="M790,90 L810,85 L820,100 L808,112 L792,105 Z" fill="#C8DFF0" stroke="#fff" stroke-width="1.5"/>
+          <!-- Korea -->
+          <path d="M760,95 L775,90 L780,105 L768,112 L757,106 Z" fill="#C8DFF0" stroke="#fff" stroke-width="1.5"/>
+          <!-- Philippines -->
+          <path d="M738,175 L752,170 L758,185 L748,195 L736,188 Z" fill="#C8DFF0" stroke="#fff" stroke-width="1.5"/>
+
+          <!-- MISSION PINS -->
+          <!-- Korea (Seoul) ~768,100 -->
+          <g class="map-pin" data-name="Korea" onmouseenter="showTip(event,'Korea')" onmouseleave="hideTip()">
+            <circle cx="768" cy="100" r="14" fill="#1D9E75" opacity="0.2" class="outer"/>
+            <circle cx="768" cy="100" r="5" fill="#1D9E75" class="inner"/>
+            <circle cx="768" cy="100" r="2.5" fill="#fff"/>
+          </g>
+          <!-- Philippines (Manila) ~745,182 -->
+          <g class="map-pin" data-name="Philippines" onmouseenter="showTip(event,'Philippines')" onmouseleave="hideTip()">
+            <circle cx="745" cy="182" r="14" fill="#1D9E75" opacity="0.2" class="outer"/>
+            <circle cx="745" cy="182" r="5" fill="#1D9E75" class="inner"/>
+            <circle cx="745" cy="182" r="2.5" fill="#fff"/>
+          </g>
+          <!-- USA (Los Angeles) ~120,145 -->
+          <g class="map-pin" data-name="USA" onmouseenter="showTip(event,'USA')" onmouseleave="hideTip()">
+            <circle cx="120" cy="145" r="14" fill="#1D9E75" opacity="0.2" class="outer"/>
+            <circle cx="120" cy="145" r="5" fill="#1D9E75" class="inner"/>
+            <circle cx="120" cy="145" r="2.5" fill="#fff"/>
+          </g>
+          <!-- Thailand (Bangkok) ~688,172 -->
+          <g class="map-pin" data-name="Thailand" onmouseenter="showTip(event,'Thailand')" onmouseleave="hideTip()">
+            <circle cx="688" cy="172" r="14" fill="#1D9E75" opacity="0.2" class="outer"/>
+            <circle cx="688" cy="172" r="5" fill="#1D9E75" class="inner"/>
+            <circle cx="688" cy="172" r="2.5" fill="#fff"/>
+          </g>
+          <!-- Malaysia (KL) ~705,195 -->
+          <g class="map-pin" data-name="Malaysia" onmouseenter="showTip(event,'Malaysia')" onmouseleave="hideTip()">
+            <circle cx="705" cy="195" r="14" fill="#1D9E75" opacity="0.2" class="outer"/>
+            <circle cx="705" cy="195" r="5" fill="#1D9E75" class="inner"/>
+            <circle cx="705" cy="195" r="2.5" fill="#fff"/>
+          </g>
+          <!-- China (Beijing) ~738,100 -->
+          <g class="map-pin" data-name="China" onmouseenter="showTip(event,'China')" onmouseleave="hideTip()">
+            <circle cx="720" cy="105" r="14" fill="#1D9E75" opacity="0.2" class="outer"/>
+            <circle cx="720" cy="105" r="5" fill="#1D9E75" class="inner"/>
+            <circle cx="720" cy="105" r="2.5" fill="#fff"/>
+          </g>
+          <!-- Pakistan (Karachi) ~610,130 -->
+          <g class="map-pin" data-name="Pakistan" onmouseenter="showTip(event,'Pakistan')" onmouseleave="hideTip()">
+            <circle cx="610" cy="128" r="14" fill="#1D9E75" opacity="0.2" class="outer"/>
+            <circle cx="610" cy="128" r="5" fill="#1D9E75" class="inner"/>
+            <circle cx="610" cy="128" r="2.5" fill="#fff"/>
+          </g>
+          <!-- India (Delhi) ~635,150 -->
+          <g class="map-pin" data-name="India" onmouseenter="showTip(event,'India')" onmouseleave="hideTip()">
+            <circle cx="635" cy="155" r="14" fill="#1D9E75" opacity="0.2" class="outer"/>
+            <circle cx="635" cy="155" r="5" fill="#1D9E75" class="inner"/>
+            <circle cx="635" cy="155" r="2.5" fill="#fff"/>
+          </g>
+          <!-- Japan (Tokyo) ~800,100 -->
+          <g class="map-pin" data-name="Japan" onmouseenter="showTip(event,'Japan')" onmouseleave="hideTip()">
+            <circle cx="800" cy="100" r="14" fill="#1D9E75" opacity="0.2" class="outer"/>
+            <circle cx="800" cy="100" r="5" fill="#1D9E75" class="inner"/>
+            <circle cx="800" cy="100" r="2.5" fill="#fff"/>
+          </g>
+        </svg>
+      </div>
+      <div class="map-legend">
+        <div class="map-legend-item"><div class="map-legend-dot"></div>Active mission field</div>
+      </div>
+    </div>
+    <script>
+      function showTip(e, name) {
+        const tip = document.getElementById('map-tooltip');
+        const rect = e.currentTarget.closest('.map-container').getBoundingClientRect();
+        const pinRect = e.currentTarget.getBoundingClientRect();
+        tip.textContent = name;
+        tip.style.left = (pinRect.left - rect.left + pinRect.width/2) + 'px';
+        tip.style.top = (pinRect.top - rect.top) + 'px';
+        tip.classList.add('show');
+      }
+      function hideTip() {
+        document.getElementById('map-tooltip').classList.remove('show');
+      }
+    </script>
   </div>
 </section>
 
@@ -322,126 +432,22 @@
 
 <section id="history">
   <div class="section-inner">
-    <p class="section-eyebrow">God's History</p>
-    <h2 class="section-title">IM Mission — <em>since 2006</em></h2>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:40px">
-      <div style="background:var(--off-white);border-radius:10px;padding:20px 16px;border:0.5px solid var(--border)">
-        <p style="font-size:22px;font-weight:500;color:var(--blue);font-family:'Cormorant Garamond',serif;margin-bottom:6px">2006</p>
-        <p style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:4px">Foundation</p>
-        <p style="font-size:11px;color:var(--text-muted);line-height:1.6">Church of Dreams & Hope · Michael English School · Youth community begins</p>
+    <div class="history-layout">
+      <div class="history-left">
+        <p class="section-eyebrow">God's History</p>
+        <h3>IM Mission<br>since 2006</h3>
+        <p>From a small youth community in Daejeon, God has grown IM Mission into an international movement spanning Korea, Philippines, USA, India, and beyond.</p>
       </div>
-      <div style="background:var(--off-white);border-radius:10px;padding:20px 16px;border:0.5px solid var(--border)">
-        <p style="font-size:22px;font-weight:500;color:var(--blue);font-family:'Cormorant Garamond',serif;margin-bottom:6px">2013</p>
-        <p style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:4px">Philippines Base</p>
-        <p style="font-size:11px;color:var(--text-muted);line-height:1.6">ANTS Seminary · IM Philippines branch · MTS Youth School</p>
+      <div>
+        <div class="tl-item"><span class="tl-year">2006</span><span class="tl-events">Founded in Daejeon · Michael English School established · Youth community ministry begins</span></div>
+        <div class="tl-item"><span class="tl-year">2007</span><span class="tl-events">Renamed IM Mission · English Vision Camp launched · IEM International School founded</span></div>
+        <div class="tl-item"><span class="tl-year">2009</span><span class="tl-events">First India short-term mission · Daejeon & Cheonan branch English schools opened</span></div>
+        <div class="tl-item"><span class="tl-year">2013</span><span class="tl-events">Philippines ANTS Seminary opens · IM Philippines branch established · MTS Youth School begins</span></div>
+        <div class="tl-item"><span class="tl-year">2016</span><span class="tl-events">Handal (한다살) national movement launched · CBUP educator training program starts</span></div>
+        <div class="tl-item"><span class="tl-year">2018</span><span class="tl-events">IM Overseas Mission HQ established in Philippines · CBUP 1st cohort graduates</span></div>
+        <div class="tl-item"><span class="tl-year">2019</span><span class="tl-events">Missions to USA, Mexico, China, Taiwan, Singapore · World Conference launched online</span></div>
+        <div class="tl-item"><span class="tl-year">2020–</span><span class="tl-events">Renew-Gen Community system · Han·Da·Se strategy · Brazil, Russia, Mongolia missions</span></div>
       </div>
-      <div style="background:var(--off-white);border-radius:10px;padding:20px 16px;border:0.5px solid var(--border)">
-        <p style="font-size:22px;font-weight:500;color:var(--blue);font-family:'Cormorant Garamond',serif;margin-bottom:6px">2016</p>
-        <p style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:4px">Handal Launched</p>
-        <p style="font-size:11px;color:var(--text-muted);line-height:1.6">한다살 national movement · CBUP educator training program</p>
-      </div>
-      <div style="background:var(--off-white);border-radius:10px;padding:20px 16px;border:0.5px solid var(--border)">
-        <p style="font-size:22px;font-weight:500;color:var(--blue);font-family:'Cormorant Garamond',serif;margin-bottom:6px">2021+</p>
-        <p style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:4px">Han · Da · Se</p>
-        <p style="font-size:11px;color:var(--text-muted);line-height:1.6">Re:NewGen system · Global missions · Brazil, Russia, Mongolia & beyond</p>
-      </div>
-    </div>
-    <div style="text-align:center">
-      <a href="ministry.html#history" style="display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--blue);border:0.5px solid rgba(24,95,165,0.3);padding:10px 24px;border-radius:30px;text-decoration:none;transition:all 0.2s;background:var(--blue-light)" onmouseover="this.style.background='#B5D4F4'" onmouseout="this.style.background='var(--blue-light)'">View Full History (2006–2022) →</a>
-    </div>
-  </div>
-</section>
-
-
-<section style="background:var(--off-white)">
-  <div class="section-inner">
-    <p class="section-eyebrow">Why IM Mission</p>
-    <h2 class="section-title">12 advantages of <em>IM Mission ministry</em></h2>
-    <p style="font-size:15px;color:var(--text-muted);line-height:1.8;max-width:640px;margin-bottom:40px">A mission society that any church can easily access and apply — here are 12 distinctive strengths that make IM Mission the right partner for your church's next-generation mission.</p>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:36px">
-      <div style="background:#fff;border-radius:10px;padding:18px 16px;border:0.5px solid var(--border);border-top:3px solid var(--blue)">
-        <p style="font-size:10px;font-weight:500;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:6px">01</p>
-        <p style="font-size:13px;font-weight:500;color:var(--navy);margin-bottom:4px">Accessibility</p>
-        <p style="font-size:11px;color:var(--text-muted);line-height:1.6">Any church can easily adopt IM Mission's systems</p>
-      </div>
-      <div style="background:#fff;border-radius:10px;padding:18px 16px;border:0.5px solid var(--border);border-top:3px solid var(--green)">
-        <p style="font-size:10px;font-weight:500;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:6px">02</p>
-        <p style="font-size:13px;font-weight:500;color:var(--navy);margin-bottom:4px">Moso-Dality</p>
-        <p style="font-size:11px;color:var(--text-muted);line-height:1.6">Mission society + local church working together</p>
-      </div>
-      <div style="background:#fff;border-radius:10px;padding:18px 16px;border:0.5px solid var(--border);border-top:3px solid var(--amber)">
-        <p style="font-size:10px;font-weight:500;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:6px">03</p>
-        <p style="font-size:13px;font-weight:500;color:var(--navy);margin-bottom:4px">Real Transformation</p>
-        <p style="font-size:11px;color:var(--text-muted);line-height:1.6">Genuine change in worldview and values</p>
-      </div>
-      <div style="background:#fff;border-radius:10px;padding:18px 16px;border:0.5px solid var(--border);border-top:3px solid #993C1D">
-        <p style="font-size:10px;font-weight:500;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:6px">04</p>
-        <p style="font-size:13px;font-weight:500;color:var(--navy);margin-bottom:4px">Community</p>
-        <p style="font-size:11px;color:var(--text-muted);line-height:1.6">Life-transforming community at the heart</p>
-      </div>
-      <div style="background:#fff;border-radius:10px;padding:18px 16px;border:0.5px solid var(--border);border-top:3px solid #7F77DD">
-        <p style="font-size:10px;font-weight:500;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:6px">05</p>
-        <p style="font-size:13px;font-weight:500;color:var(--navy);margin-bottom:4px">Peer Community</p>
-        <p style="font-size:11px;color:var(--text-muted);line-height:1.6">또래 ecosystem where peers disciple each other</p>
-      </div>
-      <div style="background:#fff;border-radius:10px;padding:18px 16px;border:0.5px solid var(--border);border-top:3px solid #C8973A">
-        <p style="font-size:10px;font-weight:500;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:6px">06</p>
-        <p style="font-size:13px;font-weight:500;color:var(--navy);margin-bottom:4px">Beyond Local Walls</p>
-        <p style="font-size:11px;color:var(--text-muted);line-height:1.6">Nationwide & worldwide community networks</p>
-      </div>
-      <div style="background:#fff;border-radius:10px;padding:18px 16px;border:0.5px solid var(--border);border-top:3px solid var(--blue)">
-        <p style="font-size:10px;font-weight:500;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:6px">07</p>
-        <p style="font-size:13px;font-weight:500;color:var(--navy);margin-bottom:4px">Online — 7 Channels</p>
-        <p style="font-size:11px;color:var(--text-muted);line-height:1.6">CBUP, Parent School, Na-Geurisdoin & more</p>
-      </div>
-      <div style="background:#fff;border-radius:10px;padding:18px 16px;border:0.5px solid var(--border);border-top:3px solid var(--green)">
-        <p style="font-size:10px;font-weight:500;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:6px">08</p>
-        <p style="font-size:13px;font-weight:500;color:var(--navy);margin-bottom:4px">Nations Mission</p>
-        <p style="font-size:11px;color:var(--text-muted);line-height:1.6">Continuous, reproducing missions worldwide</p>
-      </div>
-      <div style="background:#fff;border-radius:10px;padding:18px 16px;border:0.5px solid var(--border);border-top:3px solid var(--amber)">
-        <p style="font-size:10px;font-weight:500;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:6px">09</p>
-        <p style="font-size:13px;font-weight:500;color:var(--navy);margin-bottom:4px">English as a Weapon</p>
-        <p style="font-size:11px;color:var(--text-muted);line-height:1.6">English education system for nations mission</p>
-      </div>
-      <div style="background:#fff;border-radius:10px;padding:18px 16px;border:0.5px solid var(--border);border-top:3px solid #993C1D">
-        <p style="font-size:10px;font-weight:500;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:6px">10</p>
-        <p style="font-size:13px;font-weight:500;color:var(--navy);margin-bottom:4px">Reformed Theology</p>
-        <p style="font-size:11px;color:var(--text-muted);line-height:1.6">Triple School rooted in solid biblical doctrine</p>
-      </div>
-      <div style="background:#fff;border-radius:10px;padding:18px 16px;border:0.5px solid var(--border);border-top:3px solid #7F77DD">
-        <p style="font-size:10px;font-weight:500;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:6px">11</p>
-        <p style="font-size:13px;font-weight:500;color:var(--navy);margin-bottom:4px">Movement, Not Institution</p>
-        <p style="font-size:11px;color:var(--text-muted);line-height:1.6">Spirit-driven, self-initiated, not top-down</p>
-      </div>
-      <div style="background:#fff;border-radius:10px;padding:18px 16px;border:0.5px solid var(--border);border-top:3px solid #C8973A">
-        <p style="font-size:10px;font-weight:500;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:6px">12</p>
-        <p style="font-size:13px;font-weight:500;color:var(--navy);margin-bottom:4px">Young Field Ministers</p>
-        <p style="font-size:11px;color:var(--text-muted);line-height:1.6">Frontline ministry with hands and feet</p>
-      </div>
-    </div>
-    <div style="text-align:center">
-      <a href="ministry.html#advantages" style="display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--blue);border:0.5px solid rgba(24,95,165,0.3);padding:10px 24px;border-radius:30px;text-decoration:none;background:var(--blue-light);transition:all 0.2s" onmouseover="this.style.background='#B5D4F4'" onmouseout="this.style.background='var(--blue-light)'">See All 12 Advantages in Detail →</a>
-    </div>
-  </div>
-</section>
-
-<section id="videos" class="video-section">
-  <div class="section-inner">
-    <p class="section-eyebrow" style="color:#5DCAA5">Video Ministry</p>
-    <h2 class="section-title" style="color:#fff">Watch <em style="color:#85B7EB">our channels</em></h2>
-    <div class="channel-tabs">
-      <button class="ch-tab active" onclick="switchChannel('im',this)">IM Mission</button>
-      <button class="ch-tab" onclick="switchChannel('korea',this)">Korea</button>
-      <button class="ch-tab" onclick="switchChannel('philippines',this)">Philippines</button>
-      <button class="ch-tab" onclick="switchChannel('usa',this)">USA</button>
-      <button class="ch-tab" onclick="switchChannel('thailand',this)">Thailand</button>
-    </div>
-    <div class="video-grid" id="video-grid">
-      <p class="v-empty">Loading videos...</p>
-    </div>
-    <div style="text-align:center;margin-top:28px">
-      <a href="videos.html" id="videos-more-link" style="display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.6);border:0.5px solid rgba(255,255,255,0.15);padding:10px 24px;border-radius:30px;text-decoration:none;transition:all 0.2s" onmouseover="this.style.color='#fff';this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.color='rgba(255,255,255,0.6)';this.style.background='transparent'">See all videos →</a>
     </div>
   </div>
 </section>
@@ -500,14 +506,14 @@
   <div class="footer-inner">
     <div class="footer-col">
       <p class="footer-col-title">IM Mission</p>
-      <p id="footer-orgname">International Mission (IM선교회)</p>
+      <p>International Mission (IM선교회)</p>
       <p style="margin-top:8px;font-size:11px;color:rgba(255,255,255,0.3)">Korean Mission · Mission Korea · Nations Mission</p>
     </div>
     <div class="footer-col">
       <p class="footer-col-title">Contact</p>
       <p class="footer-phone">Tel: 042.223.2414</p>
-      <a href="http://www.imministry.co.kr" id="footer-web">www.imministry.co.kr</a>
-      <a href="#" onclick="window.location.href='mail'+'to:imministry'+'@'+'imministry.co.kr';return false;" class="footer-email" id="footer-email"><span class="__cf_email__" data-cfemail="deb7b3b3b7b0b7adaaaca79eb7b3b3b7b0b7adaaaca7f0bdb1f0b5ac">[email&#160;protected]</span></a>
+      <a href="http://www.imministry.co.kr">www.imministry.co.kr</a>
+      <a href="#" onclick="window.location.href='mail'+'to:imministry'+'@'+'imministry.co.kr';return false;" class="footer-email"><span class="__cf_email__" data-cfemail="c8a1a5a5a1a6a1bbbcbab188a1a5a5a1a6a1bbbcbab1e6aba7e6a3ba">[email&#160;protected]</span></a>
     </div>
     <div class="footer-col">
       <p class="footer-col-title">Quick Links</p>
@@ -524,7 +530,8 @@
     <p>Matthew 24:14</p>
   </div>
 </footer>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const SUPABASE_URL = 'https://illbgsjvhsciougzjgwn.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_EmIn4ZpTksxxbq7vXWTk4w_Wc38j9yH';
@@ -533,36 +540,55 @@
   // ── 갤러리 불러오기 ──────────────────────────────
   async function loadGallery() {
     const { data: photos, error } = await _supabase
-      .from('gallery').select('*').order('id', { ascending: false });
+      .from('gallery')
+      .select('*')
+      .order('id', { ascending: false });
+
     if (error) { console.error('Gallery error:', error); return; }
+
     const grid = document.getElementById('gallery-grid');
-    if (!grid || !photos || photos.length === 0) return;
+    if (!grid) return;
+    if (!photos || photos.length === 0) return;
+
     grid.innerHTML = photos.map((p, i) => `
       <div class="g-item ${i === 0 ? 'g-large' : ''}" style="background:#0C447C;">
-        <img src="${p.photoUrl}" alt="${p.title || ''}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" onerror="this.style.display='none'">
+        <img src="${p.photoUrl}" alt="${p.title || ''}"
+             style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;"
+             onerror="this.style.display='none'">
         ${p.title ? `<span style="position:relative;z-index:1;color:rgba(255,255,255,0.85);font-size:11px;background:rgba(0,0,0,0.45);padding:3px 8px;border-radius:4px;">${p.title}</span>` : ''}
-      </div>`).join('');
+      </div>
+    `).join('');
   }
 
-  // ── 소식 불러오기 ────────────────────────────────
+  // ── 소식 & 기도제목 불러오기 ──────────────────────
   async function loadNews() {
     const { data: news, error } = await _supabase
-      .from('news').select('*').order('id', { ascending: false }).limit(3);
+      .from('news')
+      .select('*')
+      .order('id', { ascending: false })
+      .limit(3);
+
     if (error) { console.error('News error:', error); return; }
+
     const grid = document.getElementById('news-grid');
-    if (!grid || !news || news.length === 0) return;
+    if (!grid) return;
+    if (!news || news.length === 0) return;
+
     grid.innerHTML = news.map(n => `
       <div class="n-card" style="background:#fff;border:0.5px solid rgba(0,0,0,0.08);border-radius:8px;overflow:hidden;">
         ${n.photoUrl
           ? `<div class="n-img" style="height:160px;overflow:hidden;"><img src="${n.photoUrl}" style="width:100%;height:100%;object-fit:cover;"></div>`
-          : `<div class="n-img" style="height:160px;background:#0C447C;display:flex;align-items:center;justify-content:center;"><span style="color:rgba(255,255,255,0.4);font-size:12px;">Mission Photo</span></div>`}
+          : `<div class="n-img" style="height:160px;background:#0C447C;display:flex;align-items:center;justify-content:center;"><span style="color:rgba(255,255,255,0.4);font-size:12px;">Mission Photo</span></div>`
+        }
         <div class="n-body" style="padding:16px;">
           <p class="n-cat" style="font-size:10px;font-weight:500;color:#1D9E75;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.1em;">${n.category || ''}</p>
           <p class="n-title" style="font-size:14px;font-weight:500;color:#1a1a1a;margin-bottom:6px;line-height:1.4;">${n.title || ''}</p>
           <p class="n-date" style="font-size:11px;color:#6b6b6b;">${n.date || ''}</p>
         </div>
-      </div>`).join('');
+      </div>
+    `).join('');
   }
+
 
   // ── 연락처 불러오기 ──────────────────────────────
   async function loadSettings() {
@@ -581,47 +607,31 @@
   }
 
   // ── 영상 불러오기 ────────────────────────────────
-  let currentChannel = 'im';
-
   function getYoutubeId(url) {
-    const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]+)/);
-    return match ? match[1] : null;
+    const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]+)/);
+    return m ? m[1] : null;
   }
 
   async function loadVideos(channel) {
-    currentChannel = channel;
     const grid = document.getElementById('video-grid');
     if (!grid) return;
     grid.innerHTML = '<p class="v-empty">Loading...</p>';
-
     const { data: videos, error } = await _supabase
-      .from('videos').select('*')
-      .eq('channel', channel)
-      .order('id', { ascending: false })
-      .limit(5);
-
+      .from('videos').select('*').eq('channel', channel)
+      .order('id', { ascending: false }).limit(5);
     if (error || !videos || videos.length === 0) {
-      grid.innerHTML = '<p class="v-empty">No videos yet for this channel.</p>';
-      return;
+      grid.innerHTML = '<p class="v-empty">No videos yet for this channel.</p>'; return;
     }
-
     grid.innerHTML = videos.map(v => {
       const vid = getYoutubeId(v.youtube_url);
       const thumb = vid ? `https://img.youtube.com/vi/${vid}/mqdefault.jpg` : '';
-      return `
-        <div class="v-card" onclick="window.open('${v.youtube_url}','_blank')">
-          <div class="v-thumb">
-            ${thumb ? `<img src="${thumb}" alt="${v.title || ''}">` : ''}
-            <div class="v-play"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="18" fill="rgba(255,255,255,0.9)"/><polygon points="14,11 28,18 14,25" fill="#042C53"/></svg></div>
-          </div>
-          <div class="v-body">
-            <p class="v-title">${v.title || 'Video'}</p>
-            <p class="v-date">${v.date || ''}</p>
-          </div>
-        </div>`;
+      return `<div class="v-card" onclick="window.open('${v.youtube_url}','_blank')">
+        <div class="v-thumb">${thumb ? `<img src="${thumb}" alt="${v.title || ''}">` : ''}
+          <div class="v-play"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="18" fill="rgba(255,255,255,0.9)"/><polygon points="14,11 28,18 14,25" fill="#042C53"/></svg></div>
+        </div>
+        <div class="v-body"><p class="v-title">${v.title || 'Video'}</p><p class="v-date">${v.date || ''}</p></div>
+      </div>`;
     }).join('');
-
-    // Update "see all" link
     const link = document.getElementById('videos-more-link');
     if (link) link.href = `videos.html?channel=${channel}`;
   }
