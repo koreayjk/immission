@@ -174,6 +174,16 @@
 
   /* WORLD MAP */
   .map-wrap { position: relative; margin-top: 56px; }
+  #world-map-wrap { background: #042C53; border-radius: 16px; padding: 32px 24px 24px; position: relative; overflow: hidden; }
+  #world-map-wrap::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px); background-size: 60px 60px; pointer-events: none; }
+  #map-svg-wrap svg { width: 100%; height: auto; display: block; }
+  .country-base { fill: #0C3D6B; stroke: #042C53; stroke-width: 0.5; }
+  .country-active { fill: #1D9E75 !important; }
+  .pin-ring { fill: none; stroke: #1D9E75; stroke-width: 1.5; opacity: 0.4; animation: mppulse 2.5s infinite; }
+  .pin-dot { fill: #1D9E75; }
+  .pin-center { fill: #fff; }
+  .pin-label { font-size: 11px; font-weight: 600; fill: #fff; font-family: sans-serif; pointer-events: none; }
+  @keyframes mppulse { 0%,100% { r: 9; opacity: 0.4; } 50% { r: 13; opacity: 0.15; } }
   .map-container { position: relative; width: 100%; max-width: 720px; margin: 0 auto; }
   .map-svg { width: 100%; height: auto; }
   .map-pin { cursor: pointer; }
@@ -192,6 +202,25 @@
   .map-legend { display: flex; gap: 16px; justify-content: center; margin-top: 16px; flex-wrap: wrap; }
   .map-legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); }
   .map-legend-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
+
+  /* VIDEOS */
+  .video-section { background: var(--navy); }
+  .channels-wrap { display: grid; grid-template-columns: repeat(5,1fr); gap: 16px; }
+  .channel-col { display: flex; flex-direction: column; gap: 10px; }
+  .channel-col-label { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #5DCAA5; margin-bottom: 4px; padding-bottom: 8px; border-bottom: 0.5px solid rgba(255,255,255,0.1); }
+  .v-card { border-radius: 8px; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
+  .v-card:hover { transform: translateY(-3px); }
+  .v-thumb { position: relative; aspect-ratio: 16/9; background: #0C447C; overflow: hidden; border-radius: 8px; }
+  .v-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .v-play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.2s; border-radius: 8px; }
+  .v-card:hover .v-play { opacity: 1; }
+  .v-play svg { width: 32px; height: 32px; }
+  .v-body { padding: 8px 0 0; }
+  .v-title { font-size: 11px; font-weight: 500; color: #fff; line-height: 1.45; margin-bottom: 3px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .v-date { font-size: 10px; color: rgba(255,255,255,0.4); }
+  .v-empty { font-size: 11px; color: rgba(255,255,255,0.25); text-align: center; padding: 20px 4px; }
+  @media (max-width: 900px) { .channels-wrap { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px) { .channels-wrap { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -248,96 +277,58 @@
 
     <!-- WORLD MAP -->
     <div class="map-wrap">
-      <p style="font-size:11px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--blue);margin-bottom:16px;text-align:center">Our Mission Fields</p>
-      <div class="map-container">
-        <div id="map-tooltip" class="map-tooltip"></div>
-        <svg class="map-svg" viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg">
-          <!-- Simple world map background -->
-          <rect width="1000" height="500" fill="#EBF4FB" rx="12"/>
-          <!-- Continents simplified -->
-          <!-- North America -->
-          <path d="M80,60 L180,50 L220,80 L240,120 L230,160 L200,180 L170,200 L140,220 L110,200 L80,160 L60,120 Z" fill="#C8DFF0" stroke="#fff" stroke-width="1.5"/>
-          <!-- South America -->
-          <path d="M160,220 L210,210 L240,250 L250,310 L230,370 L200,400 L170,380 L150,320 L140,270 Z" fill="#C8DFF0" stroke="#fff" stroke-width="1.5"/>
-          <!-- Europe -->
-          <path d="M400,40 L480,35 L500,60 L490,90 L460,100 L430,95 L410,75 Z" fill="#C8DFF0" stroke="#fff" stroke-width="1.5"/>
-          <!-- Africa -->
-          <path d="M420,110 L490,100 L520,130 L530,200 L510,280 L480,330 L450,340 L420,300 L400,230 L395,160 Z" fill="#C8DFF0" stroke="#fff" stroke-width="1.5"/>
-          <!-- Asia main -->
-          <path d="M500,30 L700,20 L780,40 L800,80 L780,120 L740,140 L700,130 L660,150 L620,140 L580,120 L540,100 L510,80 L490,60 Z" fill="#C8DFF0" stroke="#fff" stroke-width="1.5"/>
-          <!-- South Asia -->
-          <path d="M580,130 L640,125 L660,160 L640,200 L610,210 L585,185 L570,155 Z" fill="#C8DFF0" stroke="#fff" stroke-width="1.5"/>
-          <!-- SE Asia -->
-          <path d="M660,150 L720,145 L740,175 L720,200 L690,195 L665,175 Z" fill="#C8DFF0" stroke="#fff" stroke-width="1.5"/>
-          <!-- Australia -->
-          <path d="M720,280 L820,265 L850,300 L840,360 L790,385 L730,370 L700,330 L705,290 Z" fill="#C8DFF0" stroke="#fff" stroke-width="1.5"/>
-          <!-- Japan -->
-          <path d="M790,90 L810,85 L820,100 L808,112 L792,105 Z" fill="#C8DFF0" stroke="#fff" stroke-width="1.5"/>
-          <!-- Korea -->
-          <path d="M760,95 L775,90 L780,105 L768,112 L757,106 Z" fill="#C8DFF0" stroke="#fff" stroke-width="1.5"/>
-          <!-- Philippines -->
-          <path d="M738,175 L752,170 L758,185 L748,195 L736,188 Z" fill="#C8DFF0" stroke="#fff" stroke-width="1.5"/>
-
-          <!-- MISSION PINS -->
-          <!-- Korea (Seoul) ~768,100 -->
-          <g class="map-pin" data-name="Korea" onmouseenter="showTip(event,'Korea')" onmouseleave="hideTip()">
-            <circle cx="768" cy="100" r="14" fill="#1D9E75" opacity="0.2" class="outer"/>
-            <circle cx="768" cy="100" r="5" fill="#1D9E75" class="inner"/>
-            <circle cx="768" cy="100" r="2.5" fill="#fff"/>
-          </g>
-          <!-- Philippines (Manila) ~745,182 -->
-          <g class="map-pin" data-name="Philippines" onmouseenter="showTip(event,'Philippines')" onmouseleave="hideTip()">
-            <circle cx="745" cy="182" r="14" fill="#1D9E75" opacity="0.2" class="outer"/>
-            <circle cx="745" cy="182" r="5" fill="#1D9E75" class="inner"/>
-            <circle cx="745" cy="182" r="2.5" fill="#fff"/>
-          </g>
-          <!-- USA (Los Angeles) ~120,145 -->
-          <g class="map-pin" data-name="USA" onmouseenter="showTip(event,'USA')" onmouseleave="hideTip()">
-            <circle cx="120" cy="145" r="14" fill="#1D9E75" opacity="0.2" class="outer"/>
-            <circle cx="120" cy="145" r="5" fill="#1D9E75" class="inner"/>
-            <circle cx="120" cy="145" r="2.5" fill="#fff"/>
-          </g>
-          <!-- Thailand (Bangkok) ~688,172 -->
-          <g class="map-pin" data-name="Thailand" onmouseenter="showTip(event,'Thailand')" onmouseleave="hideTip()">
-            <circle cx="688" cy="172" r="14" fill="#1D9E75" opacity="0.2" class="outer"/>
-            <circle cx="688" cy="172" r="5" fill="#1D9E75" class="inner"/>
-            <circle cx="688" cy="172" r="2.5" fill="#fff"/>
-          </g>
-          <!-- Malaysia (KL) ~705,195 -->
-          <g class="map-pin" data-name="Malaysia" onmouseenter="showTip(event,'Malaysia')" onmouseleave="hideTip()">
-            <circle cx="705" cy="195" r="14" fill="#1D9E75" opacity="0.2" class="outer"/>
-            <circle cx="705" cy="195" r="5" fill="#1D9E75" class="inner"/>
-            <circle cx="705" cy="195" r="2.5" fill="#fff"/>
-          </g>
-          <!-- China (Beijing) ~738,100 -->
-          <g class="map-pin" data-name="China" onmouseenter="showTip(event,'China')" onmouseleave="hideTip()">
-            <circle cx="720" cy="105" r="14" fill="#1D9E75" opacity="0.2" class="outer"/>
-            <circle cx="720" cy="105" r="5" fill="#1D9E75" class="inner"/>
-            <circle cx="720" cy="105" r="2.5" fill="#fff"/>
-          </g>
-          <!-- Pakistan (Karachi) ~610,130 -->
-          <g class="map-pin" data-name="Pakistan" onmouseenter="showTip(event,'Pakistan')" onmouseleave="hideTip()">
-            <circle cx="610" cy="128" r="14" fill="#1D9E75" opacity="0.2" class="outer"/>
-            <circle cx="610" cy="128" r="5" fill="#1D9E75" class="inner"/>
-            <circle cx="610" cy="128" r="2.5" fill="#fff"/>
-          </g>
-          <!-- India (Delhi) ~635,150 -->
-          <g class="map-pin" data-name="India" onmouseenter="showTip(event,'India')" onmouseleave="hideTip()">
-            <circle cx="635" cy="155" r="14" fill="#1D9E75" opacity="0.2" class="outer"/>
-            <circle cx="635" cy="155" r="5" fill="#1D9E75" class="inner"/>
-            <circle cx="635" cy="155" r="2.5" fill="#fff"/>
-          </g>
-          <!-- Japan (Tokyo) ~800,100 -->
-          <g class="map-pin" data-name="Japan" onmouseenter="showTip(event,'Japan')" onmouseleave="hideTip()">
-            <circle cx="800" cy="100" r="14" fill="#1D9E75" opacity="0.2" class="outer"/>
-            <circle cx="800" cy="100" r="5" fill="#1D9E75" class="inner"/>
-            <circle cx="800" cy="100" r="2.5" fill="#fff"/>
-          </g>
-        </svg>
+      <div id="world-map-wrap">
+        <p style="font-size:11px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:#1D9E75;margin-bottom:6px;position:relative">Our Mission Fields</p>
+        <p style="font-size:18px;font-weight:300;color:#fff;margin-bottom:20px;font-family:'Cormorant Garamond',serif;position:relative">Reaching the nations — <em style="font-style:italic;color:#85B7EB">9 countries</em></p>
+        <div id="map-svg-wrap">
+          <svg id="world-svg" viewBox="0 0 960 500"></svg>
+        </div>
+        <div style="display:flex;gap:20px;justify-content:center;margin-top:16px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:rgba(255,255,255,0.5)"><div style="width:8px;height:8px;border-radius:50%;background:#1D9E75"></div>Active mission field</div>
+        </div>
       </div>
-      <div class="map-legend">
-        <div class="map-legend-item"><div class="map-legend-dot"></div>Active mission field</div>
-      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+    <script>
+    (function() {
+      const missions = [
+        { name: 'Korea',       coords: [127.0, 37.5],  dx: 8,   dy: -10, anchor: 'start' },
+        { name: 'Japan',       coords: [139.7, 35.7],  dx: 8,   dy: -10, anchor: 'start' },
+        { name: 'China',       coords: [116.4, 39.9],  dx: -8,  dy: -12, anchor: 'end' },
+        { name: 'Philippines', coords: [121.0, 14.6],  dx: 8,   dy: -10, anchor: 'start' },
+        { name: 'Thailand',    coords: [100.5, 13.7],  dx: -8,  dy: -10, anchor: 'end' },
+        { name: 'Malaysia',    coords: [101.7, 3.1],   dx: 8,   dy: 14,  anchor: 'start' },
+        { name: 'India',       coords: [77.2, 28.6],   dx: -8,  dy: -10, anchor: 'end' },
+        { name: 'Pakistan',    coords: [67.0, 24.9],   dx: -8,  dy: 14,  anchor: 'end' },
+        { name: 'USA',         coords: [-118.2, 34.1], dx: 0,   dy: -14, anchor: 'middle' },
+      ];
+      const missionIds = new Set(['410','156','608','764','458','356','586','392','840']);
+      const W = 960, H = 500;
+      const svg = d3.select('#world-svg');
+      const proj = d3.geoNaturalEarth1().scale(153).translate([W/2, H/2]);
+      const pathGen = d3.geoPath(proj);
+      d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(world => {
+        const features = topojson.feature(world, world.objects.countries).features;
+        svg.selectAll('path').data(features).join('path')
+          .attr('class', d => missionIds.has(d.id) ? 'country-base country-active' : 'country-base')
+          .attr('d', pathGen);
+        const pins = svg.selectAll('g.pin').data(missions).join('g').attr('class','pin')
+          .attr('transform', d => { const [x,y] = proj(d.coords); return `translate(${x},${y})`; });
+        pins.append('circle').attr('class','pin-ring').attr('r',9);
+        pins.append('circle').attr('class','pin-dot').attr('r',5);
+        pins.append('circle').attr('class','pin-center').attr('r',2.5);
+        pins.each(function(d) {
+          const g = d3.select(this);
+          const w = d.name.length * 6.2 + 10;
+          const bx = d.anchor === 'end' ? d.dx - w + 4 : d.anchor === 'middle' ? -w/2 : d.dx - 4;
+          g.append('rect').attr('x', bx).attr('y', d.dy - 12).attr('width', w).attr('height', 16).attr('rx', 3).attr('fill','rgba(4,28,60,0.82)');
+          g.append('text').attr('class','pin-label').attr('x', d.dx).attr('y', d.dy).attr('text-anchor', d.anchor).attr('dominant-baseline','middle').text(d.name);
+        });
+      });
+    })();
+    </script>
+    <div style="display:none">
     </div>
     <script>
       function showTip(e, name) {
@@ -436,7 +427,39 @@
       <div class="history-left">
         <p class="section-eyebrow">God's History</p>
         <h3>IM Mission<br>since 2006</h3>
-        <p>From a small youth community in Daejeon, God has grown IM Mission into an international movement spanning Korea, Philippines, USA, India, and beyond.</p>
+        <p>From a small youth community in Daejeon, God has grown IM Mission into an international movement spanning <section id="videos" class="video-section">
+  <div class="section-inner">
+    <p class="section-eyebrow" style="color:#5DCAA5">Video Ministry</p>
+    <h2 class="section-title" style="color:#fff">Watch <em style="color:#85B7EB">our channels</em></h2>
+    <div class="channels-wrap">
+      <div class="channel-col">
+        <p class="channel-col-label">IM Mission</p>
+        <div id="ch-im"><p class="v-empty">Loading...</p></div>
+      </div>
+      <div class="channel-col">
+        <p class="channel-col-label">Korea</p>
+        <div id="ch-korea"><p class="v-empty">Loading...</p></div>
+      </div>
+      <div class="channel-col">
+        <p class="channel-col-label">Philippines</p>
+        <div id="ch-philippines"><p class="v-empty">Loading...</p></div>
+      </div>
+      <div class="channel-col">
+        <p class="channel-col-label">USA</p>
+        <div id="ch-usa"><p class="v-empty">Loading...</p></div>
+      </div>
+      <div class="channel-col">
+        <p class="channel-col-label">Thailand</p>
+        <div id="ch-thailand"><p class="v-empty">Loading...</p></div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:28px">
+      <a href="videos.html" style="display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.6);border:0.5px solid rgba(255,255,255,0.15);padding:10px 24px;border-radius:30px;text-decoration:none;transition:all 0.2s" onmouseover="this.style.color='#fff';this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.color='rgba(255,255,255,0.6)';this.style.background='transparent'">See all videos →</a>
+    </div>
+  </div>
+</section>
+
+Korea, Philippines, USA, India, and beyond.</p>
       </div>
       <div>
         <div class="tl-item"><span class="tl-year">2006</span><span class="tl-events">Founded in Daejeon · Michael English School established · Youth community ministry begins</span></div>
@@ -612,41 +635,38 @@
     return m ? m[1] : null;
   }
 
-  async function loadVideos(channel) {
-    const grid = document.getElementById('video-grid');
-    if (!grid) return;
-    grid.innerHTML = '<p class="v-empty">Loading...</p>';
-    const { data: videos, error } = await _supabase
-      .from('videos').select('*').eq('channel', channel)
-      .order('id', { ascending: false }).limit(5);
-    if (error || !videos || videos.length === 0) {
-      grid.innerHTML = '<p class="v-empty">No videos yet for this channel.</p>'; return;
-    }
-    grid.innerHTML = videos.map(v => {
-      const vid = getYoutubeId(v.youtube_url);
-      const thumb = vid ? `https://img.youtube.com/vi/${vid}/mqdefault.jpg` : '';
-      return `<div class="v-card" onclick="window.open('${v.youtube_url}','_blank')">
-        <div class="v-thumb">${thumb ? `<img src="${thumb}" alt="${v.title || ''}">` : ''}
-          <div class="v-play"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="18" fill="rgba(255,255,255,0.9)"/><polygon points="14,11 28,18 14,25" fill="#042C53"/></svg></div>
-        </div>
-        <div class="v-body"><p class="v-title">${v.title || 'Video'}</p><p class="v-date">${v.date || ''}</p></div>
-      </div>`;
-    }).join('');
-    const link = document.getElementById('videos-more-link');
-    if (link) link.href = `videos.html?channel=${channel}`;
+  function renderVideoCard(v) {
+    const vid = getYoutubeId(v.youtube_url);
+    const thumb = vid ? `https://img.youtube.com/vi/${vid}/mqdefault.jpg` : '';
+    return `<div class="v-card" onclick="window.open('${v.youtube_url}','_blank')">
+      <div class="v-thumb">${thumb ? `<img src="${thumb}" alt="${v.title || ''}" loading="lazy">` : ''}
+        <div class="v-play"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="18" fill="rgba(255,255,255,0.9)"/><polygon points="14,11 28,18 14,25" fill="#042C53"/></svg></div>
+      </div>
+      <div class="v-body"><p class="v-title">${v.title || 'Video'}</p><p class="v-date">${v.date || ''}</p></div>
+    </div>`;
   }
 
-  function switchChannel(channel, btn) {
-    document.querySelectorAll('.ch-tab').forEach(t => t.classList.remove('active'));
-    btn.classList.add('active');
-    loadVideos(channel);
+  async function loadChannelVideos(channel) {
+    const el = document.getElementById('ch-' + channel);
+    if (!el) return;
+    const { data: videos, error } = await _supabase
+      .from('videos').select('*').eq('channel', channel)
+      .order('id', { ascending: false }).limit(1);
+    if (error || !videos || videos.length === 0) {
+      el.innerHTML = '<p class="v-empty">No videos yet</p>'; return;
+    }
+    el.innerHTML = videos.map(renderVideoCard).join('');
+  }
+
+  async function loadAllChannels() {
+    ['im','korea','philippines','usa','thailand'].forEach(ch => loadChannelVideos(ch));
   }
 
   window.addEventListener('DOMContentLoaded', () => {
     loadGallery();
     loadNews();
     loadSettings();
-    loadVideos('im');
+    loadAllChannels();
   });
 </script>
 </body>
