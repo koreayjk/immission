@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IM Mission — Video Ministry</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy: #042C53; --blue: #185FA5; --blue-light: #E6F1FB;
+  --green: #1D9E75; --off-white: #F7F6F2;
+  --text: #1a1a1a; --text-muted: #6b6b6b; --border: rgba(0,0,0,0.08);
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; color: var(--text); background: #fff; }
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 48px; height: 64px;
+  background: rgba(4,44,83,0.97); backdrop-filter: blur(8px);
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; }
+.nav-logo-mark { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--green); display: flex; align-items: center; justify-content: center; }
+.nav-logo-mark span { font-family: 'Cormorant Garamond', serif; font-size: 14px; font-weight: 600; color: #fff; }
+.nav-logo-text { font-size: 13px; font-weight: 500; letter-spacing: 0.06em; color: #B5D4F4; }
+.nav-back { font-size: 12px; color: var(--green); text-decoration: none; padding: 7px 16px; border: 0.5px solid rgba(29,158,117,0.4); border-radius: 30px; transition: all 0.2s; }
+.nav-back:hover { background: rgba(29,158,117,0.1); }
+
+.page-hero { background: var(--navy); padding: 140px 48px 60px; position: relative; overflow: hidden; }
+.page-hero::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(255,255,255,0.015) 60px,rgba(255,255,255,0.015) 61px), repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(255,255,255,0.015) 60px,rgba(255,255,255,0.015) 61px); }
+.hero-eyebrow { font-size: 11px; font-weight: 500; letter-spacing: 0.18em; color: var(--green); text-transform: uppercase; margin-bottom: 16px; position: relative; }
+.hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(36px,5vw,60px); font-weight: 300; color: #fff; line-height: 1.15; margin-bottom: 32px; position: relative; }
+.hero-title em { font-style: italic; color: #85B7EB; }
+
+/* CHANNEL TABS */
+.channel-bar { display: flex; gap: 8px; flex-wrap: wrap; position: relative; }
+.ch-btn {
+  font-size: 13px; font-weight: 500; padding: 10px 22px; border-radius: 30px;
+  border: 0.5px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.55);
+  cursor: pointer; transition: all 0.2s; background: transparent;
+  font-family: 'DM Sans', sans-serif;
+}
+.ch-btn:hover { color: #fff; background: rgba(255,255,255,0.08); }
+.ch-btn.active { background: var(--green); border-color: var(--green); color: #fff; }
+
+/* MAIN CONTENT */
+.main { padding: 56px 48px; max-width: 1200px; margin: 0 auto; }
+.channel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+.channel-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; color: var(--navy); }
+.channel-count { font-size: 13px; color: var(--text-muted); }
+
+/* VIDEO GRID */
+.video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.v-card { cursor: pointer; transition: transform 0.2s; }
+.v-card:hover { transform: translateY(-3px); }
+.v-thumb {
+  position: relative; aspect-ratio: 16/9;
+  background: var(--navy); border-radius: 10px; overflow: hidden; margin-bottom: 10px;
+}
+.v-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.v-duration {
+  position: absolute; bottom: 8px; right: 8px;
+  background: rgba(0,0,0,0.75); color: #fff; font-size: 10px; font-weight: 500;
+  padding: 2px 6px; border-radius: 4px;
+}
+.v-play-overlay {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.25); opacity: 0; transition: opacity 0.2s;
+}
+.v-card:hover .v-play-overlay { opacity: 1; }
+.v-play-overlay svg { width: 48px; height: 48px; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4)); }
+.v-title { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.45; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.v-meta { font-size: 11px; color: var(--text-muted); }
+
+.v-empty { font-size: 14px; color: var(--text-muted); text-align: center; padding: 80px 0; grid-column: 1/-1; }
+.v-loading { font-size: 13px; color: var(--text-muted); text-align: center; padding: 60px 0; grid-column: 1/-1; }
+
+/* MODAL */
+.modal-wrap {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,0.85); display: none;
+  align-items: center; justify-content: center; padding: 24px;
+}
+.modal-wrap.open { display: flex; }
+.modal-box { background: #000; border-radius: 12px; overflow: hidden; width: 100%; max-width: 900px; position: relative; }
+.modal-close {
+  position: absolute; top: 12px; right: 12px; z-index: 10;
+  width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.15);
+  border: none; color: #fff; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+.modal-close:hover { background: rgba(255,255,255,0.3); }
+.modal-iframe { width: 100%; aspect-ratio: 16/9; border: none; display: block; }
+
+footer { background: #021A33; padding: 28px 48px; text-align: center; }
+footer p { font-size: 11px; color: rgba(255,255,255,0.25); }
+footer a { color: var(--green); text-decoration: none; font-size: 13px; display: inline-block; margin-bottom: 8px; }
+
+@media (max-width: 768px) {
+  nav { padding: 0 20px; }
+  .page-hero { padding: 110px 24px 48px; }
+  .main { padding: 40px 20px; }
+  .video-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
+}
+@media (max-width: 480px) {
+  .video-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-mark"><span>IM</span></div>
+    <span class="nav-logo-text">International Mission</span>
+  </a>
+  <a href="index.html" class="nav-back">← Home</a>
+</nav>
+
+<div class="page-hero">
+  <p class="hero-eyebrow">Video Ministry</p>
+  <h1 class="hero-title">Watch <em>our channels</em></h1>
+  <div class="channel-bar">
+    <button class="ch-btn" data-channel="im" onclick="switchChannel('im',this)">IM선교회</button>
+    <button class="ch-btn" data-channel="korea" onclick="switchChannel('korea',this)">한국본부</button>
+    <button class="ch-btn" data-channel="philippines" onclick="switchChannel('philippines',this)">필리핀본부</button>
+    <button class="ch-btn" data-channel="usa" onclick="switchChannel('usa',this)">미국본부</button>
+    <button class="ch-btn" data-channel="thailand" onclick="switchChannel('thailand',this)">태국</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="channel-header">
+    <h2 class="channel-title" id="channel-title">IM선교회</h2>
+    <p class="channel-count" id="channel-count"></p>
+  </div>
+  <div class="video-grid" id="video-grid">
+    <p class="v-loading">Loading videos...</p>
+  </div>
+</div>
+
+<!-- VIDEO MODAL -->
+<div class="modal-wrap" id="modal" onclick="closeModal(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <iframe class="modal-iframe" id="modal-iframe" src="" allowfullscreen allow="autoplay"></iframe>
+  </div>
+</div>
+
+<footer>
+  <a href="index.html">← Back to IM Mission Home</a>
+  <p>© 2025 International Mission (IM선교회). All rights reserved.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://illbgsjvhsciougzjgwn.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_EmIn4ZpTksxxbq7vXWTk4w_Wc38j9yH';
+const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const CHANNEL_NAMES = {
+  im: 'IM선교회',
+  korea: '한국본부',
+  philippines: '필리핀본부',
+  usa: '미국본부',
+  thailand: '태국'
+};
+
+function getYoutubeId(url) {
+  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]+)/);
+  return match ? match[1] : null;
+}
+
+async function loadVideos(channel) {
+  const grid = document.getElementById('video-grid');
+  const title = document.getElementById('channel-title');
+  const count = document.getElementById('channel-count');
+
+  grid.innerHTML = '<p class="v-loading">Loading...</p>';
+  if (title) title.textContent = CHANNEL_NAMES[channel] || channel;
+
+  const { data: videos, error } = await _supabase
+    .from('videos').select('*')
+    .eq('channel', channel)
+    .order('id', { ascending: false })
+    .limit(10);
+
+  if (error || !videos || videos.length === 0) {
+    grid.innerHTML = '<p class="v-empty">No videos yet for this channel.<br>Add videos from the admin page.</p>';
+    if (count) count.textContent = '';
+    return;
+  }
+
+  if (count) count.textContent = `${videos.length} video${videos.length > 1 ? 's' : ''}`;
+
+  grid.innerHTML = videos.map(v => {
+    const vid = getYoutubeId(v.youtube_url);
+    const thumb = vid ? `https://img.youtube.com/vi/${vid}/mqdefault.jpg` : '';
+    return `
+      <div class="v-card" onclick="openVideo('${v.youtube_url}')">
+        <div class="v-thumb">
+          ${thumb ? `<img src="${thumb}" alt="${v.title || 'Video'}" loading="lazy">` : `<div style="width:100%;height:100%;background:#0C447C"></div>`}
+          <div class="v-play-overlay">
+            <svg viewBox="0 0 48 48" fill="none">
+              <circle cx="24" cy="24" r="24" fill="rgba(255,255,255,0.9)"/>
+              <polygon points="19,14 38,24 19,34" fill="#042C53"/>
+            </svg>
+          </div>
+        </div>
+        <p class="v-title">${v.title || 'Video'}</p>
+        <p class="v-meta">${v.date || ''}</p>
+      </div>`;
+  }).join('');
+}
+
+function switchChannel(channel, btn) {
+  document.querySelectorAll('.ch-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  loadVideos(channel);
+  history.replaceState(null, '', `?channel=${channel}`);
+}
+
+function openVideo(url) {
+  const vid = getYoutubeId(url);
+  if (!vid) { window.open(url, '_blank'); return; }
+  const iframe = document.getElementById('modal-iframe');
+  iframe.src = `https://www.youtube.com/embed/${vid}?autoplay=1`;
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modal') && !e.target.classList.contains('modal-close')) return;
+  document.getElementById('modal-iframe').src = '';
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal({target: document.getElementById('modal')}); });
+
+// Init — check URL param
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const ch = params.get('channel') || 'im';
+  const btn = document.querySelector(`[data-channel="${ch}"]`);
+  if (btn) { btn.classList.add('active'); }
+  else { document.querySelector('[data-channel="im"]').classList.add('active'); }
+  loadVideos(ch);
+});
+</script>
+</body>
+</html>
