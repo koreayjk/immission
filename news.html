@@ -78,6 +78,12 @@ footer p { font-size: 11px; color: rgba(255,255,255,0.25); }
 @media (max-width: 480px) {
   .news-grid { grid-template-columns: 1fr; }
 }
+  /* LIGHTBOX */
+.lightbox-wrap { position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; padding: 24px; cursor: zoom-out; }
+.lightbox-wrap.open { display: flex; }
+.lightbox-img { max-width: 100%; max-height: 90vh; border-radius: 8px; object-fit: contain; }
+.lightbox-close { position: absolute; top: 16px; right: 20px; font-size: 28px; color: #fff; cursor: pointer; background: none; border: none; line-height: 1; }
+  
 </style>
 </head>
 <body>
@@ -115,7 +121,10 @@ footer p { font-size: 11px; color: rgba(255,255,255,0.25); }
   <a href="index.html">← Back to IM Mission Home</a>
   <p>© 2025 International Mission (IM선교회). All rights reserved.</p>
 </footer>
-
+<div class="lightbox-wrap" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img class="lightbox-img" id="lightbox-img" src="" alt="">
+</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL = 'https://illbgsjvhsciougzjgwn.supabase.co';
@@ -140,7 +149,7 @@ function renderCards(news, append = false) {
     <div class="n-card">
       <div class="n-img">
         ${n.photoUrl
-          ? `<img src="${n.photoUrl}" alt="${n.title||''}">`
+          ? `<img src="${n.photoUrl}" alt="${n.title||''}" onclick="openLightbox('${n.photoUrl}')" style="cursor:zoom-in;">`
           : `<span>Mission Photo</span>`}
       </div>
       <div class="n-body">
@@ -208,7 +217,16 @@ function filterNews(cat, el) {
   currentFilter = cat;
   loadNews(false);
 }
-
+function openLightbox(src) {
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
 window.addEventListener('DOMContentLoaded', () => loadNews(false));
 </script>
 </body>
