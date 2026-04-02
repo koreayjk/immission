@@ -212,20 +212,6 @@
   .qr-modal-sub { font-size: 12px; color: #6b6b6b; margin-bottom: 20px; line-height: 1.5; }
   .qr-modal-img { width: 200px; height: 200px; margin: 0 auto 16px; display: block; border-radius: 8px; }
   .qr-modal-info { font-size: 11px; color: #6b6b6b; line-height: 1.6; }
-  /* NEWS MODAL */
-  .news-modal-wrap { position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.75); display: none; align-items: center; justify-content: center; padding: 24px; backdrop-filter: blur(4px); }
-  .news-modal-wrap.open { display: flex; }
-  .news-modal-box { background: #fff; border-radius: 16px; max-width: 600px; width: 100%; max-height: 85vh; overflow-y: auto; position: relative; animation: modalIn 0.25s ease; }
-  .news-modal-img { width: 100%; max-height: 360px; object-fit: cover; border-radius: 16px 16px 0 0; display: block; }
-  .news-modal-body { padding: 24px 28px 32px; }
-  .news-modal-cat { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--green); margin-bottom: 8px; }
-  .news-modal-title { font-size: 20px; font-weight: 500; color: var(--text); margin-bottom: 8px; line-height: 1.4; }
-  .news-modal-date { font-size: 11px; color: var(--text-muted); margin-bottom: 16px; }
-  .news-modal-content { font-size: 14px; color: var(--text-muted); line-height: 1.8; }
-  .news-modal-close { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; border-radius: 50%; background: rgba(0,0,0,0.4); border: none; cursor: pointer; font-size: 16px; color: #fff; display: flex; align-items: center; justify-content: center; z-index: 10; }
-  .news-modal-close:hover { background: rgba(0,0,0,0.6); }
-  .n-card { cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
-  .n-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
 </style>
 </head>
 <body>
@@ -462,19 +448,6 @@
     <p class="qr-modal-info">Open your bank app → Send Money → Scan QR<br>Account: xxx-xxx-0696</p>
   </div>
 </div>
-<!-- NEWS MODAL -->
-<div class="news-modal-wrap" id="news-modal" onclick="if(event.target===this)closeNewsModal()">
-  <div class="news-modal-box">
-    <button class="news-modal-close" onclick="closeNewsModal()">✕</button>
-    <img src="" alt="" class="news-modal-img" id="news-modal-img" style="display:none">
-    <div class="news-modal-body">
-      <p class="news-modal-cat" id="news-modal-cat"></p>
-      <p class="news-modal-title" id="news-modal-title"></p>
-      <p class="news-modal-date" id="news-modal-date"></p>
-      <p class="news-modal-content" id="news-modal-content"></p>
-    </div>
-  </div>
-</div>
 <footer>
   <div class="footer-inner">
     <div class="footer-col">
@@ -492,7 +465,6 @@
       <p class="footer-col-title">Quick Links</p>
       <a href="#about">About & Vision</a>
       <a href="#ministry">Core Ministry</a>
-      <a href="#strategy">Han · Da · Se</a>
       <a href="#history">Our History</a>
       <a href="#news">News & Prayer</a>
       <a href="#support">Support Us</a>
@@ -537,7 +509,7 @@
     const { data: news, error } = await _supabase.from('news').select('*').order('id', { ascending: false }).limit(3);
     if (error || !news || news.length === 0) return;
     const grid = document.getElementById('news-grid'); if (!grid) return;
-    grid.innerHTML = news.map(n => `<div class="n-card" style="background:#fff;border:0.5px solid rgba(0,0,0,0.08);border-radius:8px;overflow:hidden;" onclick="openNewsModal('${n.title}','${(n.body||'').replace(/'/g,String.fromCharCode(39))}','${n.category||''}','${n.date||''}','${n.photoUrl||''}')">${n.photoUrl?`<div class="n-img" style="height:160px;overflow:hidden;"><img src="${n.photoUrl}" style="width:100%;height:100%;object-fit:cover;"></div>`:`<div class="n-img" style="height:160px;background:#0C447C;display:flex;align-items:center;justify-content:center;"><span style="color:rgba(255,255,255,0.4);font-size:12px;">Mission Photo</span></div>`}<div class="n-body" style="padding:16px;"><p class="n-cat" style="font-size:10px;font-weight:500;color:#1D9E75;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.1em;">${n.category||''}</p><p class="n-title" style="font-size:14px;font-weight:500;color:#1a1a1a;margin-bottom:6px;line-height:1.4;">${n.title||''}</p><p class="n-date" style="font-size:11px;color:#6b6b6b;">${n.date||''}</p></div></div>`).join('');
+    grid.innerHTML = news.map(n => `<div class="n-card" style="background:#fff;border:0.5px solid rgba(0,0,0,0.08);border-radius:8px;overflow:hidden;">${n.photoUrl?`<div class="n-img" style="height:160px;overflow:hidden;"><img src="${n.photoUrl}" style="width:100%;height:100%;object-fit:cover;"></div>`:`<div class="n-img" style="height:160px;background:#0C447C;display:flex;align-items:center;justify-content:center;"><span style="color:rgba(255,255,255,0.4);font-size:12px;">Mission Photo</span></div>`}<div class="n-body" style="padding:16px;"><p class="n-cat" style="font-size:10px;font-weight:500;color:#1D9E75;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.1em;">${n.category||''}</p><p class="n-title" style="font-size:14px;font-weight:500;color:#1a1a1a;margin-bottom:6px;line-height:1.4;">${n.title||''}</p><p class="n-date" style="font-size:11px;color:#6b6b6b;">${n.date||''}</p></div></div>`).join('');
   }
 
   // ── 연락처 불러오기 ──
@@ -572,21 +544,6 @@
   function openQR() { document.getElementById('qr-modal').classList.add('open'); document.body.style.overflow='hidden'; }
   function closeQR() { document.getElementById('qr-modal').classList.remove('open'); document.body.style.overflow=''; }
   document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeQR(); });
-function openNewsModal(title, body, category, date, photoUrl) {
-    document.getElementById('news-modal-title').textContent = title || '';
-    document.getElementById('news-modal-content').textContent = body || '';
-    document.getElementById('news-modal-cat').textContent = category || '';
-    document.getElementById('news-modal-date').textContent = date || '';
-    const img = document.getElementById('news-modal-img');
-    if (photoUrl) { img.src = photoUrl; img.style.display = 'block'; }
-    else { img.style.display = 'none'; }
-    document.getElementById('news-modal').classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeNewsModal() {
-    document.getElementById('news-modal').classList.remove('open');
-    document.body.style.overflow = '';
-  }
   window.addEventListener('DOMContentLoaded', () => {
     loadGallery(); loadNews(); loadSettings(); loadAllChannels();
   });
