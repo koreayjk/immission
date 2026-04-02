@@ -237,24 +237,28 @@
         <p class="m-card-title">Education</p>
         <p class="m-card-desc">Raising missionaries through mentoring, self-directed learning, and reformed theology.</p>
         <div class="m-card-tags"><span class="m-tag">Triple School (Gospel · Disciple · Calling)</span><span class="m-tag">Renew-Gen Community</span><span class="m-tag">Faith · Life · Learning · Mission</span></div>
+        <a href="ministry.html#education" style="display:inline-block;margin-top:16px;font-size:11px;color:#85B7EB;border:0.5px solid rgba(133,183,235,0.4);padding:5px 14px;border-radius:20px;text-decoration:none;transition:all 0.2s" onmouseover="this.style.background='rgba(133,183,235,0.1)'" onmouseout="this.style.background='transparent'">Learn More →</a>
       </div>
       <div class="m-card">
         <div class="m-card-icon" style="background:rgba(29,158,117,0.2)"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#5DCAA5" stroke-width="1.5"/><path d="M10 6v4l3 3" stroke="#5DCAA5" stroke-width="1.5" stroke-linecap="round"/></svg></div>
         <p class="m-card-title">Camp</p>
         <p class="m-card-desc">Living worship, living word, living community — transformation camps for every generation.</p>
         <div class="m-card-tags"><span class="m-tag">Going Vision Camp (Go-B)</span><span class="m-tag">Coming Vision Camp (Com-B)</span><span class="m-tag">Handal · Jesus Copy · Transformation</span></div>
+        <a href="ministry.html#camp" style="display:inline-block;margin-top:16px;font-size:11px;color:#5DCAA5;border:0.5px solid rgba(93,202,165,0.4);padding:5px 14px;border-radius:20px;text-decoration:none;transition:all 0.2s" onmouseover="this.style.background='rgba(93,202,165,0.1)'" onmouseout="this.style.background='transparent'">Learn More →</a>
       </div>
       <div class="m-card">
         <div class="m-card-icon" style="background:rgba(186,117,23,0.2)"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2L3 7v11h5v-5h4v5h5V7L10 2z" stroke="#EF9F27" stroke-width="1.5" fill="none"/></svg></div>
         <p class="m-card-title">Local Church</p>
         <p class="m-card-desc">Bridging the modality of churches with the sodality of mission societies.</p>
         <div class="m-card-tags"><span class="m-tag">Next-gen partnership model</span><span class="m-tag">5-Generation ministry</span><span class="m-tag">Online & offline systems</span></div>
+        <a href="ministry.html#church" style="display:inline-block;margin-top:16px;font-size:11px;color:#EF9F27;border:0.5px solid rgba(239,159,39,0.4);padding:5px 14px;border-radius:20px;text-decoration:none;transition:all 0.2s" onmouseover="this.style.background='rgba(239,159,39,0.1)'" onmouseout="this.style.background='transparent'">Learn More →</a>
       </div>
       <div class="m-card">
         <div class="m-card-icon" style="background:rgba(153,60,29,0.2)"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="6" r="3" stroke="#F0997B" stroke-width="1.5"/><path d="M4 18c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="#F0997B" stroke-width="1.5" stroke-linecap="round"/></svg></div>
         <p class="m-card-title">Mission</p>
         <p class="m-card-desc">Every Christian is a missionary. Every place of life is a mission field.</p>
         <div class="m-card-tags"><span class="m-tag">Local Mission (home, work, school)</span><span class="m-tag">Urban Evangelization</span><span class="m-tag">Nations — Philippines, India, USA</span></div>
+        <a href="ministry.html#mission" style="display:inline-block;margin-top:16px;font-size:11px;color:#F0997B;border:0.5px solid rgba(240,153,123,0.4);padding:5px 14px;border-radius:20px;text-decoration:none;transition:all 0.2s" onmouseover="this.style.background='rgba(240,153,123,0.1)'" onmouseout="this.style.background='transparent'">Learn More →</a>
       </div>
     </div>
   </div>
@@ -377,14 +381,14 @@
   <div class="footer-inner">
     <div class="footer-col">
       <p class="footer-col-title">IM Mission</p>
-      <p id="footer-orgname">International Mission (IM선교회)</p>
+      <p>International Mission (IM선교회)</p>
       <p style="margin-top:8px;font-size:11px;color:rgba(255,255,255,0.3)">Korean Mission · Mission Korea · Nations Mission</p>
     </div>
     <div class="footer-col">
       <p class="footer-col-title">Contact</p>
-      <p class="footer-phone" id="footer-phone">Tel: 042.223.2414</p>
-      <a href="http://www.imministry.co.kr" id="footer-web">www.imministry.co.kr</a>
-      <a href="#" onclick="window.location.href='mail'+'to:imministry'+'@'+'imministry.co.kr';return false;" class="footer-email" id="footer-email">imministry@imministry.co.kr</a>
+      <p class="footer-phone">Tel: 042.223.2414</p>
+      <a href="http://www.imministry.co.kr">www.imministry.co.kr</a>
+      <a href="#" onclick="window.location.href='mail'+'to:imministry'+'@'+'imministry.co.kr';return false;" class="footer-email"><span class="__cf_email__" data-cfemail="4c2521212522253f383e350c2521212522253f383e35622f2362273e">[email&#160;protected]</span></a>
     </div>
     <div class="footer-col">
       <p class="footer-col-title">Quick Links</p>
@@ -460,7 +464,7 @@
     `).join('');
   }
   // ── 페이지 로드 시 
-  // ── 연락처 불러오기 (배너 건드리지 않음) ──────────
+  // ── 연락처 불러오기 ──────────
   async function loadSettings() {
     try {
       const { data, error } = await _supabase.from('settings').select('*').limit(1).single();
@@ -472,13 +476,9 @@
         const em = data.email.trim();
         const ef = document.getElementById('footer-email');
         if (ef) { ef.textContent = em; ef.onclick = () => { window.location.href = 'mailto:' + em; return false; }; }
-        const eb = document.querySelector('a.btn-primary[onclick*="imministry"]');
-        if (eb) eb.onclick = () => { window.location.href = 'mailto:' + em; return false; };
       }
     } catch(e) { console.log('Settings skipped:', e); }
   }
-
-  // ── 페이지 로드 시 실행 ───────────────────────────
   window.addEventListener('DOMContentLoaded', () => {
     loadGallery();
     loadNews();
