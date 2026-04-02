@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IM Mission — Core Ministry</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #042C53; --blue: #185FA5; --blue-light: #E6F1FB;
+    --green: #1D9E75; --amber: #BA7517; --coral: #993C1D;
+    --off-white: #F7F6F2; --text: #1a1a1a; --text-muted: #6b6b6b; --border: rgba(0,0,0,0.08);
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; color: var(--text); background: #fff; overflow-x: hidden; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px; height: 64px;
+    background: rgba(4,44,83,0.97); backdrop-filter: blur(8px);
+  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; }
+  .nav-logo-mark { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--green); display: flex; align-items: center; justify-content: center; }
+  .nav-logo-mark span { font-family: 'Cormorant Garamond', serif; font-size: 14px; font-weight: 600; color: #fff; }
+  .nav-logo-text { font-size: 13px; font-weight: 500; letter-spacing: 0.06em; color: #B5D4F4; }
+  .nav-back { font-size: 12px; color: rgba(255,255,255,0.6); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
+  .nav-back:hover { color: #fff; }
+  .nav-links { display: flex; gap: 20px; }
+  .nav-links a { font-size: 12px; color: rgba(255,255,255,0.6); text-decoration: none; transition: color 0.2s; padding: 6px 12px; border-radius: 4px; }
+  .nav-links a:hover { color: #fff; background: rgba(255,255,255,0.08); }
+
+  /* HERO */
+  .page-hero {
+    background: var(--navy); padding: 140px 48px 80px;
+    text-align: center; position: relative; overflow: hidden;
+  }
+  .page-hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(255,255,255,0.015) 60px,rgba(255,255,255,0.015) 61px),
+    repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(255,255,255,0.015) 60px,rgba(255,255,255,0.015) 61px);
+  }
+  .page-hero-eyebrow { font-size: 11px; font-weight: 500; letter-spacing: 0.18em; color: var(--green); text-transform: uppercase; margin-bottom: 16px; position: relative; }
+  .page-hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(36px,5vw,64px); font-weight: 300; color: #fff; line-height: 1.15; margin-bottom: 20px; position: relative; }
+  .page-hero-title em { font-style: italic; color: #85B7EB; }
+  .page-hero-desc { font-size: 15px; color: rgba(255,255,255,0.55); max-width: 560px; margin: 0 auto 40px; line-height: 1.8; position: relative; }
+
+  /* MINISTRY NAV TABS */
+  .ministry-tabs {
+    display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+    position: relative; z-index: 1;
+  }
+  .ministry-tab {
+    font-size: 13px; font-weight: 500; padding: 10px 22px; border-radius: 30px;
+    text-decoration: none; transition: all 0.2s; border: 0.5px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.65);
+  }
+  .ministry-tab:hover { background: rgba(255,255,255,0.1); color: #fff; }
+  .ministry-tab.education { border-color: #378ADD; }
+  .ministry-tab.camp { border-color: #1D9E75; }
+  .ministry-tab.church { border-color: #BA7517; }
+  .ministry-tab.mission { border-color: #D85A30; }
+  .ministry-tab.education:hover { background: rgba(55,138,221,0.15); color: #85B7EB; }
+  .ministry-tab.camp:hover { background: rgba(29,158,117,0.15); color: #5DCAA5; }
+  .ministry-tab.church:hover { background: rgba(186,117,23,0.15); color: #EF9F27; }
+  .ministry-tab.mission:hover { background: rgba(216,90,48,0.15); color: #F0997B; }
+
+  /* SECTIONS */
+  .ministry-section { padding: 96px 48px; border-bottom: 0.5px solid var(--border); }
+  .ministry-section:last-child { border-bottom: none; }
+  .ministry-section.alt { background: var(--off-white); }
+  .section-inner { max-width: 1080px; margin: 0 auto; }
+
+  .section-header { display: flex; align-items: flex-start; gap: 24px; margin-bottom: 56px; }
+  .section-icon { width: 56px; height: 56px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 4px; }
+  .section-header-text {}
+  .section-num { font-size: 11px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 8px; }
+  .section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(32px,4vw,52px); font-weight: 300; line-height: 1.15; margin-bottom: 16px; }
+  .section-title em { font-style: italic; }
+  .section-lead { font-size: 15px; color: var(--text-muted); line-height: 1.8; max-width: 680px; }
+
+  /* CONTENT BLOCKS */
+  .content-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 48px; }
+  .content-grid.three { grid-template-columns: repeat(3,1fr); }
+  .content-grid.four { grid-template-columns: repeat(4,1fr); }
+  .content-card { background: #fff; border-radius: 12px; padding: 28px 24px; border: 0.5px solid var(--border); }
+  .content-card.dark { background: var(--navy); border-color: rgba(255,255,255,0.1); }
+  .content-card-num { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; margin-bottom: 10px; }
+  .content-card-title { font-size: 15px; font-weight: 500; margin-bottom: 10px; line-height: 1.4; }
+  .content-card-title.dark { color: #fff; }
+  .content-card-desc { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+  .content-card-desc.dark { color: rgba(255,255,255,0.55); }
+
+  .item-list { display: flex; flex-direction: column; gap: 0; }
+  .item-row { display: flex; gap: 16px; align-items: flex-start; padding: 16px 0; border-bottom: 0.5px solid var(--border); }
+  .item-row:last-child { border-bottom: none; }
+  .item-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+  .item-title { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+  .item-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+  .highlight-box { border-radius: 12px; padding: 32px; margin-bottom: 32px; }
+  .highlight-box.blue { background: var(--blue-light); border: 0.5px solid rgba(24,95,165,0.2); }
+  .highlight-box.green { background: #E1F5EE; border: 0.5px solid rgba(29,158,117,0.2); }
+  .highlight-box.amber { background: #FAEEDA; border: 0.5px solid rgba(186,117,23,0.2); }
+  .highlight-box.coral { background: #FAECE7; border: 0.5px solid rgba(153,60,29,0.2); }
+  .highlight-quote { font-family: 'Cormorant Garamond', serif; font-size: clamp(18px,2.5vw,26px); font-weight: 300; line-height: 1.5; margin-bottom: 12px; }
+  .highlight-quote.blue { color: #0C447C; }
+  .highlight-quote.green { color: #085041; }
+  .highlight-quote.amber { color: #633806; }
+  .highlight-quote.coral { color: #712B13; }
+  .highlight-sub { font-size: 13px; }
+  .highlight-sub.blue { color: #185FA5; }
+  .highlight-sub.green { color: #0F6E56; }
+  .highlight-sub.amber { color: #854F0B; }
+  .highlight-sub.coral { color: #993C1D; }
+
+  /* CAMP CARDS */
+  .camp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .camp-card { border-radius: 12px; padding: 28px; border: 0.5px solid var(--border); background: #fff; display: flex; gap: 20px; align-items: flex-start; }
+  .camp-badge { width: 56px; height: 56px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; flex-shrink: 0; }
+  .camp-card-title { font-size: 13px; font-weight: 500; color: var(--text-muted); letter-spacing: 0.06em; margin-bottom: 6px; }
+  .camp-card-name { font-size: 16px; font-weight: 500; margin-bottom: 10px; }
+  .camp-card-desc { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+
+  /* GENERATION CHART */
+  .gen-row { display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; margin-top: 32px; }
+  .gen-card { text-align: center; padding: 20px 12px; border-radius: 10px; border: 0.5px solid var(--border); background: #fff; }
+  .gen-name { font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+  .gen-kr { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
+  .gen-tag { font-size: 10px; font-weight: 500; padding: 3px 10px; border-radius: 20px; display: inline-block; }
+  .gen-desc { font-size: 11px; color: var(--text-muted); margin-top: 8px; line-height: 1.5; }
+
+  /* MISSION AREAS */
+  .mission-area { display: grid; grid-template-columns: 200px 1fr; gap: 32px; align-items: center; padding: 32px; border-radius: 12px; border: 0.5px solid var(--border); margin-bottom: 20px; background: #fff; }
+  .mission-area-num { font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 300; line-height: 1; }
+  .mission-area-title { font-size: 18px; font-weight: 500; margin-bottom: 8px; }
+  .mission-area-sub { font-size: 13px; font-weight: 500; margin-bottom: 12px; }
+  .mission-area-desc { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+
+  /* DIVIDER */
+  .section-divider { width: 48px; height: 2px; margin-bottom: 48px; }
+
+  /* BACK TO TOP */
+  .back-to-home { text-align: center; padding: 48px; background: var(--navy); }
+  .back-to-home a { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: rgba(255,255,255,0.6); text-decoration: none; padding: 12px 24px; border-radius: 30px; border: 0.5px solid rgba(255,255,255,0.2); transition: all 0.2s; }
+  .back-to-home a:hover { color: #fff; background: rgba(255,255,255,0.08); }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 20px; }
+    .page-hero { padding: 120px 24px 60px; }
+    .ministry-section { padding: 64px 24px; }
+    .content-grid, .content-grid.three, .content-grid.four { grid-template-columns: 1fr; }
+    .camp-grid { grid-template-columns: 1fr; }
+    .gen-row { grid-template-columns: 1fr 1fr; }
+    .mission-area { grid-template-columns: 1fr; }
+    .section-header { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-mark"><span>IM</span></div>
+    <span class="nav-logo-text">International Mission</span>
+  </a>
+  <div class="nav-links">
+    <a href="#education">Education</a>
+    <a href="#camp">Camp</a>
+    <a href="#church">Local Church</a>
+    <a href="#mission">Mission</a>
+  </div>
+  <a href="index.html" class="nav-back">← Back to Home</a>
+</nav>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <p class="page-hero-eyebrow">Core Ministry</p>
+  <h1 class="page-hero-title">Four <em>pillars</em> of IM Mission</h1>
+  <p class="page-hero-desc">IM Mission raises every person as a whole-person, whole-life, frontline missionary through four interconnected pillars of ministry.</p>
+  <div class="ministry-tabs">
+    <a href="#education" class="ministry-tab education">Education</a>
+    <a href="#camp" class="ministry-tab camp">Camp</a>
+    <a href="#church" class="ministry-tab church">Local Church</a>
+    <a href="#mission" class="ministry-tab mission">Mission</a>
+  </div>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- EDUCATION -->
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<section class="ministry-section" id="education">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-icon" style="background:#E6F1FB">
+        <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="3" y="3" width="9" height="9" rx="2" fill="#185FA5"/><rect x="14" y="3" width="9" height="9" rx="2" fill="#185FA5"/><rect x="3" y="14" width="9" height="9" rx="2" fill="#185FA5"/><rect x="14" y="14" width="9" height="9" rx="2" fill="#185FA5"/></svg>
+      </div>
+      <div class="section-header-text">
+        <p class="section-num" style="color:var(--blue)">Ministry 01 — Education</p>
+        <h2 class="section-title" style="color:var(--navy)">Raising the <em style="color:var(--blue)">next generation</em><br>of missionaries</h2>
+        <p class="section-lead">The next generation is the foundation of the church. IM Mission raises up Re:NewGen — a new generation that leads a new breed and starts a new wave. We equip every person as a whole-person, whole-life, frontline missionary through education, mentoring, and community.</p>
+      </div>
+    </div>
+
+    <!-- Triple School -->
+    <div class="highlight-box blue">
+      <p class="highlight-quote blue">"Raising whole-person Christians through the Triple School System"</p>
+      <p class="highlight-sub blue">Gospel School · Disciple School · Calling School</p>
+    </div>
+
+    <div class="content-grid three" style="margin-bottom:48px">
+      <div class="content-card">
+        <p class="content-card-num" style="color:var(--blue)">01. Gospel School</p>
+        <p class="content-card-title">Raising whole-person Christians</p>
+        <p class="content-card-desc">Establishing a Christian worldview through three perspectives: Redemptive History (God's history of salvation), Kingdom of God (God's purpose of salvation), and Covenant (God's method of salvation).</p>
+      </div>
+      <div class="content-card">
+        <p class="content-card-num" style="color:var(--blue)">02. Disciple School</p>
+        <p class="content-card-title">Raising whole-life Christians</p>
+        <p class="content-card-desc">Establishing a Christian value system through godly thinking, godly action, and godly living — grounded in the truth of Scripture in every area of life.</p>
+      </div>
+      <div class="content-card">
+        <p class="content-card-num" style="color:var(--blue)">03. Calling School</p>
+        <p class="content-card-title">Raising frontline Christians</p>
+        <p class="content-card-desc">Establishing Christian influence through vision and calling, evangelism and mission, and church and end times — equipping missionaries to impact the world.</p>
+      </div>
+    </div>
+
+    <!-- Renew-Gen -->
+    <h3 style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;margin-bottom:24px;color:var(--navy)">Re:NewGen Community</h3>
+    <div class="item-list" style="margin-bottom:48px">
+      <div class="item-row">
+        <div class="item-dot" style="background:var(--blue)"></div>
+        <div>
+          <p class="item-title">Leading the 4th Industrial Revolution</p>
+          <p class="item-desc">Harmonizing online systems and community systems to form a new generation that navigates digital and physical worlds with a kingdom perspective.</p>
+        </div>
+      </div>
+      <div class="item-row">
+        <div class="item-dot" style="background:var(--blue)"></div>
+        <div>
+          <p class="item-title">Raising Global Leaders</p>
+          <p class="item-desc">Connected to the Moving School and worldwide communities through Sedasal, forming global leaders who carry the gospel across nations.</p>
+        </div>
+      </div>
+      <div class="item-row">
+        <div class="item-dot" style="background:var(--blue)"></div>
+        <div>
+          <p class="item-title">Protecting Christian Education</p>
+          <p class="item-desc">Establishing worldview, values, and calling through the Triple School — raising up a generation with strong biblical foundations.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Education Mechanisms -->
+    <h3 style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;margin-bottom:24px;color:var(--navy)">Education Mechanisms</h3>
+    <div class="content-grid" style="margin-bottom:48px">
+      <div class="content-card">
+        <p class="content-card-num" style="color:var(--blue)">Mentoring</p>
+        <p class="content-card-title">Life-on-life discipleship</p>
+        <p class="content-card-desc">A method of education that presents and trains a person in the way of a whole life — passing on faith, character, and calling through personal relationship.</p>
+      </div>
+      <div class="content-card">
+        <p class="content-card-num" style="color:var(--blue)">Self-directed Learning</p>
+        <p class="content-card-title">Lifelong learners</p>
+        <p class="content-card-desc">Developing people who pursue learning throughout their lives — building habits of reading, reflection, and personal growth driven by love for truth.</p>
+      </div>
+    </div>
+
+    <!-- Training Areas -->
+    <h3 style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;margin-bottom:24px;color:var(--navy)">Four Training Areas</h3>
+    <div class="content-grid four">
+      <div class="content-card" style="border-top:3px solid var(--blue)">
+        <p class="content-card-num" style="color:var(--blue)">Faith Training</p>
+        <p class="content-card-title">Spiritual Formation</p>
+        <p class="content-card-desc">Triple School, worship, Scripture meditation, and prayer — forming deep roots in God.</p>
+      </div>
+      <div class="content-card" style="border-top:3px solid var(--green)">
+        <p class="content-card-num" style="color:var(--green)">Life Training</p>
+        <p class="content-card-title">Community 3C</p>
+        <p class="content-card-desc">Five management areas, four areas of self-discipline, and leadership development for whole-life growth.</p>
+      </div>
+      <div class="content-card" style="border-top:3px solid var(--amber)">
+        <p class="content-card-num" style="color:var(--amber)">Academic Training</p>
+        <p class="content-card-title">Learning & Competence</p>
+        <p class="content-card-desc">Triangle, English learning, reading, and academic understanding — developing intellectual capacity for kingdom impact.</p>
+      </div>
+      <div class="content-card" style="border-top:3px solid var(--coral)">
+        <p class="content-card-num" style="color:var(--coral)">Mission Training</p>
+        <p class="content-card-title">Frontline Sending</p>
+        <p class="content-card-desc">Local mission, domain mission, nations mission, urban evangelism, and generational ministry.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- CAMP -->
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<section class="ministry-section alt" id="camp">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-icon" style="background:#E1F5EE">
+        <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="9" stroke="#1D9E75" stroke-width="1.8"/><path d="M13 8v5l4 4" stroke="#1D9E75" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </div>
+      <div class="section-header-text">
+        <p class="section-num" style="color:var(--green)">Ministry 02 — Camp</p>
+        <h2 class="section-title" style="color:var(--navy)">Living worship, living word,<br><em style="color:var(--green)">living community</em></h2>
+        <p class="section-lead">Human salvation and transformation, and the discovery of true vision, are only possible through meeting Jesus. IM Mission's camps are where the joy of salvation, the decision to change, and the participation in God's kingdom vision all happen. We meet Jesus through living worship, living Word, and living people.</p>
+      </div>
+    </div>
+
+    <div class="highlight-box green" style="margin-bottom:48px">
+      <p class="highlight-quote green">"Camps where every generation experiences transformation and revival"</p>
+      <p class="highlight-sub green">Going · Coming · Handal · Jesus Copy · Transformation</p>
+    </div>
+
+    <div class="camp-grid">
+      <div class="camp-card">
+        <div class="camp-badge" style="background:#E1F5EE;color:#085041">고비</div>
+        <div>
+          <p class="camp-card-title">GOING VISION CAMP</p>
+          <p class="camp-card-name">Go-B Camp — One-day camp visiting local churches</p>
+          <p class="camp-card-desc">IM Mission travels to local churches across Korea, bringing gospel-based messages and biblical values. Includes Triple School camps, value camps, learning camps, and mission camps — filled with diverse and meaningful programs.</p>
+        </div>
+      </div>
+      <div class="camp-card">
+        <div class="camp-badge" style="background:#E1F5EE;color:#085041">컴비</div>
+        <div>
+          <p class="camp-card-title">COMING VISION CAMP</p>
+          <p class="camp-card-name">Com-B Camp — One-day camp hosted at IM Mission</p>
+          <p class="camp-card-desc">Local churches come to IM Mission to experience the full range of Go-B camp programs and community life for a day. A time of vibrant worship, warm fellowship, and a shared one-day journey.</p>
+        </div>
+      </div>
+      <div class="camp-card">
+        <div class="camp-badge" style="background:#FAEEDA;color:#633806">한다살</div>
+        <div>
+          <p class="camp-card-title">NEXT GENERATION REVIVAL CAMP</p>
+          <p class="camp-card-name">Handal — 2-night 3-day camp for the next generation</p>
+          <p class="camp-card-desc">Not a camp made by adults or famous speakers — but a camp where the next generation creates for the next generation. Peers plan programs for peers, share the gospel with peers, and celebrate being Christians together.</p>
+        </div>
+      </div>
+      <div class="camp-card">
+        <div class="camp-badge" style="background:#E6F1FB;color:#0C447C">예수<br>복제소</div>
+        <div>
+          <p class="camp-card-title">3–4 WEEK INTENSIVE CAMP</p>
+          <p class="camp-card-name">Jesus Copy — Gospel, Disciple & Calling Camp</p>
+          <p class="camp-card-desc">To fully understand the gospel of Jesus, become a whole-life disciple, and frontline fulfill the calling of Jesus — becoming a copy of Jesus. Integrated training in faith, life, learning, and mission based on the slogan "raising Christians with both spirituality and competence."</p>
+        </div>
+      </div>
+      <div class="camp-card" style="grid-column: span 2">
+        <div class="camp-badge" style="background:#FAECE7;color:#712B13;font-size:14px">트랜스포<br>메이션</div>
+        <div>
+          <p class="camp-card-title">NATIONAL CONVENTION CAMP</p>
+          <p class="camp-card-name">Transformation — Raising up the next generation! Reviving the church! Igniting Mission Korea!</p>
+          <p class="camp-card-desc">A time to confirm that Korea's next generation is alive, that the Korean church is alive, and to reignite the passion for mission — where all gather before God to declare again. Renew-Gen communities and churches from across the nation come together to proclaim Korean Mission, Mission Korea, and Nations Mission.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- LOCAL CHURCH -->
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<section class="ministry-section" id="church">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-icon" style="background:#FAEEDA">
+        <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M13 3L4 9v14h6v-6h6v6h6V9L13 3z" stroke="#BA7517" stroke-width="1.8" fill="none"/></svg>
+      </div>
+      <div class="section-header-text">
+        <p class="section-num" style="color:var(--amber)">Ministry 03 — Local Church</p>
+        <h2 class="section-title" style="color:var(--navy)">Connecting the church<br>and <em style="color:var(--amber)">the mission</em></h2>
+        <p class="section-lead">The local church is a modality — focused on congregation and nurture. The mission society is a sodality — focused on mission and task. IM Mission continuously supports and collaborates with Korean local churches so that the task of missionary training becomes embedded in the local church, enabling them to actively participate in God's kingdom mission strategy.</p>
+      </div>
+    </div>
+
+    <div class="highlight-box amber" style="margin-bottom:48px">
+      <p class="highlight-quote amber">"Building Moso-Dality — churches that plant missionaries in every generation"</p>
+      <p class="highlight-sub amber">Sodality + Modality working together for the kingdom</p>
+    </div>
+
+    <!-- Next Gen Partnership -->
+    <h3 style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;margin-bottom:8px;color:var(--navy)">01. Next-Generation Mission Partnership</h3>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:28px;line-height:1.7">A structure that allows local churches to experience next-generation mission through the mission society, then carry it out directly in their own church context.</p>
+
+    <div class="content-grid" style="margin-bottom:56px">
+      <div class="content-card">
+        <p class="content-card-num" style="color:var(--amber)">Online System</p>
+        <p class="content-card-title">Go-B/Com-B · Seminar/Conference · Parent School · Na-Geurisdoin · CBUP</p>
+        <p class="content-card-desc">A comprehensive online system connecting churches to IM Mission's training resources, allowing any church to access next-gen mission tools anytime.</p>
+      </div>
+      <div class="content-card">
+        <p class="content-card-num" style="color:var(--amber)">Offline System</p>
+        <p class="content-card-title">Church Independence Camp · Renew-Gen Community · Jesus Copy Camp · Handal Camp</p>
+        <p class="content-card-desc">Offline gatherings and camps that bring churches into direct, embodied community — experiencing transformation together and sending missionaries from within.</p>
+      </div>
+    </div>
+
+    <!-- Generations -->
+    <h3 style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;margin-bottom:8px;color:var(--navy)">02. Generational Ministry</h3>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:24px;line-height:1.7">A vision to raise all generations — from the next generation to seniors — as missionaries, each equipped for their place and calling.</p>
+
+    <div class="gen-row">
+      <div class="gen-card">
+        <p class="gen-name">Next Gen</p>
+        <p class="gen-kr">리뉴젠</p>
+        <span class="gen-tag" style="background:#E6F1FB;color:#0C447C">Re:NewGen</span>
+        <p class="gen-desc">The new generation igniting revival</p>
+      </div>
+      <div class="gen-card">
+        <p class="gen-name">Youth</p>
+        <p class="gen-kr">인투젠</p>
+        <span class="gen-tag" style="background:#E1F5EE;color:#085041">IntuGen</span>
+        <p class="gen-desc">Connecting the gospel and life in the present</p>
+      </div>
+      <div class="gen-card">
+        <p class="gen-name">Parents</p>
+        <p class="gen-kr">전수젠</p>
+        <span class="gen-tag" style="background:#FAEEDA;color:#633806">JeonsuGen</span>
+        <p class="gen-desc">Passing on faith to the next generation</p>
+      </div>
+      <div class="gen-card">
+        <p class="gen-name">Established</p>
+        <p class="gen-kr">사역젠</p>
+        <span class="gen-tag" style="background:#FAECE7;color:#712B13">SaRyeokGen</span>
+        <p class="gen-desc">Leading real revival and ministry</p>
+      </div>
+      <div class="gen-card">
+        <p class="gen-name">Seniors</p>
+        <p class="gen-kr">실버젠</p>
+        <span class="gen-tag" style="background:#F1EFE8;color:#444441">SilverGen</span>
+        <p class="gen-desc">Fulfilling their calling to the very end</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- MISSION -->
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<section class="ministry-section alt" id="mission">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-icon" style="background:#FAECE7">
+        <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><circle cx="13" cy="8" r="4" stroke="#D85A30" stroke-width="1.8"/><path d="M5 23c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="#D85A30" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </div>
+      <div class="section-header-text">
+        <p class="section-num" style="color:var(--coral)">Ministry 04 — Mission</p>
+        <h2 class="section-title" style="color:var(--navy)">Every Christian,<br>a <em style="color:var(--coral)">missionary</em></h2>
+        <p class="section-lead">By expanding the meaning of "missionary" and "mission," IM Mission raises all Christians as missionaries and designates every place of life as a mission field. The gospel, education, nurture, and mission are reproduced in every local area, domain, and nation.</p>
+      </div>
+    </div>
+
+    <div class="highlight-box coral" style="margin-bottom:48px">
+      <p class="highlight-quote coral">"Wherever you stand is your mission field"</p>
+      <p class="highlight-sub coral">Local · Urban · Domain · Nations — every Christian is a missionary</p>
+    </div>
+
+    <div class="mission-area">
+      <div>
+        <p class="mission-area-num" style="color:#E6F1FB">01</p>
+        <p class="mission-area-title">Local Mission</p>
+        <p class="mission-area-sub" style="color:var(--blue)">My place becomes my mission field</p>
+      </div>
+      <div>
+        <p class="mission-area-desc">Home · Workplace · School · Church · Community — every place where a Christian stands is a mission field. IM Mission equips believers to live as missionaries in the ordinary places of everyday life.</p>
+      </div>
+    </div>
+
+    <div class="mission-area">
+      <div>
+        <p class="mission-area-num" style="color:#E1F5EE">02</p>
+        <p class="mission-area-title">Urban Evangelization</p>
+        <p class="mission-area-sub" style="color:var(--green)">Transforming cities with the gospel</p>
+      </div>
+      <div>
+        <p class="mission-area-desc">In the era of the 4th Industrial Revolution and the new normal, the boundaries between virtual and real, online and offline, and different generations are blurring. IntuGen — bridging generations and realities — breaks through cities with the gospel.</p>
+      </div>
+    </div>
+
+    <div class="mission-area">
+      <div>
+        <p class="mission-area-num" style="color:#FAEEDA">03</p>
+        <p class="mission-area-title">Domain Mission</p>
+        <p class="mission-area-sub" style="color:var(--amber)">God's reign in every sphere of society</p>
+      </div>
+      <div>
+        <p class="mission-area-desc">Politics · Economy · Education · Arts & Sports · Media · Medicine & Science & Technology — IM Mission raises missionaries who bring God's kingdom principles into every domain of society, transforming culture from within.</p>
+      </div>
+    </div>
+
+    <div class="mission-area">
+      <div>
+        <p class="mission-area-num" style="color:#FAECE7">04</p>
+        <p class="mission-area-title">Nations Mission</p>
+        <p class="mission-area-sub" style="color:var(--coral)">The gospel crossing every border</p>
+      </div>
+      <div>
+        <p class="mission-area-desc">IM Mission has established its overseas mission headquarters in the Philippines as a model base for how IM's vision and ministry structure can be implemented in global missions. A US branch leads missions among Korean students, next-generation ministry in America, and South American mission work. Networks of missionaries are formed worldwide through Moving School, short-term missions, study abroad, and online ministry — enabling continuous nations missions.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BACK TO HOME -->
+<div class="back-to-home">
+  <a href="index.html">← Back to IM Mission Home</a>
+</div>
+
+</body>
+</html>
