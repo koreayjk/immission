@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IM Mission — International Mission</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #042C53; --blue: #185FA5; --blue-light: #E6F1FB;
+    --green: #1D9E75; --green-light: #E1F5EE;
+    --amber: #BA7517; --off-white: #F7F6F2;
+    --text: #1a1a1a; --text-muted: #6b6b6b; --border: rgba(0,0,0,0.08);
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; color: var(--text); background: #fff; overflow-x: hidden; }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px; height: 64px;
+    background: rgba(4,44,83,0.97); backdrop-filter: blur(8px);
+  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; }
+  .nav-logo-mark {
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 1.5px solid var(--green);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .nav-logo-mark span { font-family: 'Cormorant Garamond', serif; font-size: 14px; font-weight: 600; color: #fff; }
+  .nav-logo-text { font-size: 13px; font-weight: 500; letter-spacing: 0.06em; color: #B5D4F4; }
+  .nav-links { display: flex; gap: 28px; list-style: none; }
+  .nav-links a { font-size: 12px; color: rgba(255,255,255,0.65); text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: #fff; }
+  .nav-cta {
+    background: var(--green); color: #fff; font-size: 12px; font-weight: 500;
+    padding: 8px 18px; border-radius: 4px; text-decoration: none; transition: background 0.2s;
+  }
+  .nav-cta:hover { background: #0F6E56; }
+
+  .hero {
+    min-height: 100vh; background: var(--navy);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 120px 24px 100px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(255,255,255,0.015) 60px,rgba(255,255,255,0.015) 61px),
+    repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(255,255,255,0.015) 60px,rgba(255,255,255,0.015) 61px);
+  }
+  .hero-wave { position: absolute; bottom: 0; left: 0; right: 0; height: 100px; overflow: hidden; }
+  .hero-wave svg { width: 100%; height: 100%; }
+  .hero-eyebrow { font-size: 11px; font-weight: 500; letter-spacing: 0.18em; color: var(--green); text-transform: uppercase; margin-bottom: 20px; animation: fadeUp 0.8s ease both; }
+  .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(42px,7vw,80px); font-weight: 300; line-height: 1.1; color: #fff; margin-bottom: 24px; animation: fadeUp 0.8s 0.1s ease both; }
+  .hero-title em { font-style: italic; color: #85B7EB; }
+  .hero-verse { font-size: 14px; font-style: italic; color: rgba(255,255,255,0.5); max-width: 480px; line-height: 1.7; margin-bottom: 40px; animation: fadeUp 0.8s 0.2s ease both; }
+  .hero-tags { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 40px; animation: fadeUp 0.8s 0.3s ease both; }
+  .hero-tag { font-size: 11px; letter-spacing: 0.08em; padding: 6px 16px; border-radius: 24px; border: 0.5px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.7); }
+  .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; animation: fadeUp 0.8s 0.4s ease both; }
+  .btn-primary { background: var(--green); color: #fff; font-size: 13px; font-weight: 500; padding: 12px 28px; border-radius: 4px; text-decoration: none; transition: background 0.2s; display: inline-block; }
+  .btn-primary:hover { background: #0F6E56; }
+  .btn-outline { background: transparent; color: rgba(255,255,255,0.8); font-size: 13px; padding: 12px 28px; border-radius: 4px; text-decoration: none; border: 0.5px solid rgba(255,255,255,0.25); transition: all 0.2s; display: inline-block; }
+  .btn-outline:hover { border-color: rgba(255,255,255,0.5); color: #fff; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+  section { padding: 88px 48px; }
+  .section-inner { max-width: 1080px; margin: 0 auto; }
+  .section-eyebrow { font-size: 11px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--blue); margin-bottom: 10px; }
+  .section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(28px,4vw,44px); font-weight: 300; line-height: 1.2; margin-bottom: 48px; }
+  .section-title em { font-style: italic; color: var(--blue); }
+
+  .vision-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+  .vision-text p { font-size: 15px; color: var(--text-muted); line-height: 1.8; margin-bottom: 20px; }
+  .pillar { display: flex; gap: 16px; align-items: flex-start; padding: 16px; border-radius: 8px; border: 0.5px solid var(--border); background: var(--off-white); margin-bottom: 12px; transition: border-color 0.2s; }
+  .pillar:hover { border-color: var(--blue); }
+  .pillar-num { font-size: 11px; font-weight: 500; color: var(--blue); min-width: 48px; padding-top: 2px; }
+  .pillar-title { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
+  .pillar-desc { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+
+  .ministry-bg { background: var(--navy); }
+  .ministry-bg .section-eyebrow { color: #5DCAA5; }
+  .ministry-bg .section-title { color: #fff; }
+  .ministry-bg .section-title em { color: #85B7EB; }
+  .ministry-cards { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+  .m-card { padding: 24px 20px; border-radius: 8px; border: 0.5px solid rgba(255,255,255,0.1); transition: all 0.2s; }
+  .m-card:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.04); }
+  .m-card-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+  .m-card-title { font-size: 15px; font-weight: 500; color: #fff; margin-bottom: 8px; }
+  .m-card-desc { font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.7; }
+  .m-card-tags { margin-top: 14px; }
+  .m-tag { font-size: 10px; color: rgba(255,255,255,0.4); padding: 3px 0; border-top: 0.5px solid rgba(255,255,255,0.08); display: block; }
+
+  .strategy-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+  .s-card { border-radius: 10px; padding: 28px 24px; }
+  .s-card-en { font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 6px; opacity: 0.6; }
+  .s-card-kr { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; margin-bottom: 4px; }
+  .s-card-mode { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; opacity: 0.5; }
+  .s-card-title { font-size: 14px; font-weight: 500; margin-bottom: 8px; }
+  .s-card-desc { font-size: 12px; line-height: 1.7; opacity: 0.7; margin-bottom: 16px; }
+  .s-item { font-size: 11px; padding: 4px 10px; border-radius: 20px; display: inline-block; background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.8); margin: 2px 2px 2px 0; }
+  .s-blue { background: #0C447C; color: #fff; }
+  .s-green { background: #085041; color: #fff; }
+  .s-coral { background: #712B13; color: #fff; }
+
+  .five-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 14px; }
+  .f-card { background: #fff; border-radius: 8px; padding: 20px 16px; border: 0.5px solid var(--border); transition: border-color 0.2s; }
+  .f-card:hover { border-color: var(--blue); }
+  .f-num { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; color: var(--blue-light); line-height: 1; margin-bottom: 12px; }
+  .f-title { font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+  .f-desc { font-size: 11px; color: var(--text-muted); line-height: 1.6; }
+
+  .history-layout { display: grid; grid-template-columns: 220px 1fr; gap: 48px; }
+  .history-left h3 { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; line-height: 1.3; margin-bottom: 16px; }
+  .history-left p { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+  .tl-item { display: grid; grid-template-columns: 72px 1fr; gap: 20px; padding: 14px 0; border-bottom: 0.5px solid var(--border); }
+  .tl-year { font-size: 13px; font-weight: 500; color: var(--blue); padding-top: 2px; }
+  .tl-events { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+
+  /* GALLERY */
+  .gallery-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
+  .g-item {
+    border-radius: 8px; overflow: hidden; aspect-ratio: 1;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.06em;
+    text-transform: uppercase; position: relative;
+  }
+  .g-item img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+  .g-item span { position: relative; z-index: 1; color: rgba(255,255,255,0.5); }
+  .g-large { grid-column: span 2; grid-row: span 2; }
+
+  .news-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+  .n-card { border-radius: 8px; overflow: hidden; border: 0.5px solid var(--border); }
+  .n-img { height: 160px; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; }
+  .n-img img { width: 100%; height: 100%; object-fit: cover; }
+  .n-img span { position: absolute; font-size: 11px; color: rgba(255,255,255,0.5); }
+  .n-body { padding: 16px; }
+  .n-cat { font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--green); margin-bottom: 6px; }
+  .n-title { font-size: 14px; font-weight: 500; line-height: 1.4; margin-bottom: 6px; }
+  .n-date { font-size: 11px; color: var(--text-muted); }
+
+  .support-bg { background: var(--navy); }
+  .support-inner { max-width: 640px; margin: 0 auto; text-align: center; }
+  .support-inner .section-eyebrow { color: #5DCAA5; }
+  .support-inner .section-title { color: #fff; }
+  .support-inner p { font-size: 14px; color: rgba(255,255,255,0.55); line-height: 1.8; margin-bottom: 36px; }
+  .support-options { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 32px; }
+  .sup-opt { background: rgba(255,255,255,0.06); border: 0.5px solid rgba(255,255,255,0.12); border-radius: 8px; padding: 16px 12px; text-align: center; }
+  .sup-opt-title { font-size: 13px; font-weight: 500; color: #fff; margin-bottom: 4px; }
+  .sup-opt-desc { font-size: 11px; color: rgba(255,255,255,0.4); line-height: 1.5; }
+
+  footer { background: #021A33; padding: 40px 48px 28px; }
+  .footer-inner { max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; padding-bottom: 28px; border-bottom: 0.5px solid rgba(255,255,255,0.08); }
+  .footer-col-title { font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 14px; }
+  .footer-col p, .footer-col a { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.8; text-decoration: none; display: block; transition: color 0.2s; }
+  .footer-col a:hover { color: rgba(255,255,255,0.85); }
+  .footer-bottom { max-width: 1080px; margin: 20px auto 0; display: flex; justify-content: space-between; align-items: center; }
+  .footer-bottom p { font-size: 11px; color: rgba(255,255,255,0.25); }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 20px; } .nav-links { display: none; }
+    section { padding: 64px 20px; }
+    .vision-grid, .history-layout { grid-template-columns: 1fr; }
+    .ministry-cards { grid-template-columns: 1fr 1fr; }
+    .strategy-cards { grid-template-columns: 1fr; }
+    .five-grid { grid-template-columns: 1fr 1fr; }
+    .gallery-grid { grid-template-columns: 1fr 1fr; }
+    .g-large { grid-column: span 2; }
+    .news-grid { grid-template-columns: 1fr; }
+    .support-options { grid-template-columns: 1fr; }
+    .footer-inner { grid-template-columns: 1fr; gap: 24px; }
+    .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-mark"><span>IM</span></div>
+    <span class="nav-logo-text">International Mission</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#ministry">Ministry</a></li>
+    <li><a href="#strategy">Strategy</a></li>
+    <li><a href="#history">History</a></li>
+    <li><a href="#news">News & Prayer</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+  </ul>
+  <a href="#support" class="nav-cta">Support Us</a>
+</nav>
+
+<section class="hero" id="home">
+  <p class="hero-eyebrow" id="hero-eyebrow">International Mission · Since 2006</p>
+  <h1 class="hero-title" id="hero-title">Raising the <em>Next Generation</em><br>for World Missions</h1>
+  <p class="hero-verse" id="hero-verse">"And this gospel of the kingdom will be proclaimed throughout the whole world as a testimony to all nations, and then the end will come." — Matthew 24:14</p>
+  <div class="hero-tags">
+    <span class="hero-tag">Korean Mission</span>
+    <span class="hero-tag">Mission Korea</span>
+    <span class="hero-tag">Nations Mission</span>
+    <span class="hero-tag">Han · Da · Se</span>
+  </div>
+  <div class="hero-btns">
+    <a href="#ministry" class="btn-primary">Explore Our Ministry</a>
+    <a href="#support" class="btn-outline">Partner With Us</a>
+  </div>
+  <div class="hero-wave"><svg viewBox="0 0 1440 100" preserveAspectRatio="none" fill="#ffffff"><path d="M0,50 C360,90 720,10 1080,50 C1260,70 1380,40 1440,50 L1440,100 L0,100 Z"/></svg></div>
+</section>
+
+<section id="about">
+  <div class="section-inner">
+    <div class="vision-grid">
+      <div class="vision-text">
+        <p class="section-eyebrow">Vision & Mission</p>
+        <h2 class="section-title">Completing the <em>Great Commission</em></h2>
+        <p>IM Mission exists to fulfill the mission of completing evangelism to all nations. We raise every person as a missionary, equipped to carry out God's calling in their place, region, domain, and to the ends of the earth.</p>
+        <p>Through our Triple School system — Gospel School, Disciple School, and Calling School — we develop whole-person, whole-life, frontline missionaries who transform the world from the inside out.</p>
+      </div>
+      <div>
+        <div class="pillar"><span class="pillar-num">Vision</span><div><p class="pillar-title">Mission Completion</p><p class="pillar-desc">Matthew 24:14 — proclaiming the gospel to every nation until the end comes.</p></div></div>
+        <div class="pillar"><span class="pillar-num">Mission</span><div><p class="pillar-title">Triple School</p><p class="pillar-desc">Raising whole-person missionaries through Gospel, Disciple, and Calling schools.</p></div></div>
+        <div class="pillar"><span class="pillar-num">Spirit</span><div><p class="pillar-title">Re:NewGen</p><p class="pillar-desc">New Generation → New Breed → New Wave. Awakening the next generation for revival.</p></div></div>
+        <div class="pillar"><span class="pillar-num">Reach</span><div><p class="pillar-title">Philippines · USA · India & Beyond</p><p class="pillar-desc">Active field missions across Asia, Americas, and a growing global network.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="ministry" class="ministry-bg">
+  <div class="section-inner">
+    <p class="section-eyebrow">Core Ministry</p>
+    <h2 class="section-title">Four <em>pillars</em> of IM Mission</h2>
+    <div class="ministry-cards">
+      <div class="m-card">
+        <div class="m-card-icon" style="background:rgba(24,95,165,0.2)"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="7" height="7" rx="1.5" fill="#85B7EB"/><rect x="11" y="2" width="7" height="7" rx="1.5" fill="#85B7EB"/><rect x="2" y="11" width="7" height="7" rx="1.5" fill="#85B7EB"/><rect x="11" y="11" width="7" height="7" rx="1.5" fill="#85B7EB"/></svg></div>
+        <p class="m-card-title">Education</p>
+        <p class="m-card-desc">Raising missionaries through mentoring, self-directed learning, and reformed theology.</p>
+        <div class="m-card-tags"><span class="m-tag">Triple School (Gospel · Disciple · Calling)</span><span class="m-tag">Renew-Gen Community</span><span class="m-tag">Faith · Life · Learning · Mission</span></div>
+      </div>
+      <div class="m-card">
+        <div class="m-card-icon" style="background:rgba(29,158,117,0.2)"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#5DCAA5" stroke-width="1.5"/><path d="M10 6v4l3 3" stroke="#5DCAA5" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <p class="m-card-title">Camp</p>
+        <p class="m-card-desc">Living worship, living word, living community — transformation camps for every generation.</p>
+        <div class="m-card-tags"><span class="m-tag">Going Vision Camp (Go-B)</span><span class="m-tag">Coming Vision Camp (Com-B)</span><span class="m-tag">Handal · Jesus Copy · Transformation</span></div>
+      </div>
+      <div class="m-card">
+        <div class="m-card-icon" style="background:rgba(186,117,23,0.2)"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2L3 7v11h5v-5h4v5h5V7L10 2z" stroke="#EF9F27" stroke-width="1.5" fill="none"/></svg></div>
+        <p class="m-card-title">Local Church</p>
+        <p class="m-card-desc">Bridging the modality of churches with the sodality of mission societies.</p>
+        <div class="m-card-tags"><span class="m-tag">Next-gen partnership model</span><span class="m-tag">5-Generation ministry</span><span class="m-tag">Online & offline systems</span></div>
+      </div>
+      <div class="m-card">
+        <div class="m-card-icon" style="background:rgba(153,60,29,0.2)"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="6" r="3" stroke="#F0997B" stroke-width="1.5"/><path d="M4 18c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="#F0997B" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <p class="m-card-title">Mission</p>
+        <p class="m-card-desc">Every Christian is a missionary. Every place of life is a mission field.</p>
+        <div class="m-card-tags"><span class="m-tag">Local Mission (home, work, school)</span><span class="m-tag">Urban Evangelization</span><span class="m-tag">Nations — Philippines, India, USA</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="strategy" style="background:var(--off-white)">
+  <div class="section-inner">
+    <p class="section-eyebrow">Mission Strategy</p>
+    <h2 class="section-title">Han · Da · Se — <em>Three Tracks</em></h2>
+    <div class="strategy-cards">
+      <div class="s-card s-blue">
+        <p class="s-card-en">BUS</p><p class="s-card-kr">한교살</p><p class="s-card-mode">Hangyosal</p>
+        <p class="s-card-title">Korean Church Revival</p>
+        <p class="s-card-desc">Applying IM's next-gen education and mission strategy to local churches across Korea.</p>
+        <span class="s-item">Renew-Gen Community</span><span class="s-item">Generational Ministry</span><span class="s-item">Online + Offline</span>
+      </div>
+      <div class="s-card s-green">
+        <p class="s-card-en">TRAIN</p><p class="s-card-kr">다살아</p><p class="s-card-mode">Dasala</p>
+        <p class="s-card-title">National Network for Mission Korea</p>
+        <p class="s-card-desc">Online broadcasting network connecting communities nationwide through Dasala TV.</p>
+        <span class="s-item">Dasala TV</span><span class="s-item">Transformation Camp</span><span class="s-item">Next-Gen Expo</span>
+      </div>
+      <div class="s-card s-coral">
+        <p class="s-card-en">AIRPLANE</p><p class="s-card-kr">세다살</p><p class="s-card-mode">Sedasal</p>
+        <p class="s-card-title">World Mission — Nations Evangelization</p>
+        <p class="s-card-desc">Renew-Gen communities traveling to the nations — Moving School plants sustainable mission systems.</p>
+        <span class="s-item">Moving School</span><span class="s-item">Field Mission Support</span><span class="s-item">Global Leader Training</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--off-white);padding-top:0">
+  <div class="section-inner">
+    <p class="section-eyebrow">IM Five Pillars</p>
+    <h2 class="section-title">What we <em>believe and live by</em></h2>
+    <div class="five-grid">
+      <div class="f-card"><p class="f-num">01</p><p class="f-title">Creed</p><p class="f-desc">Reformed faith — Sola Scriptura, Gratia, Christus, Fide, Deo Gloria</p></div>
+      <div class="f-card"><p class="f-num">02</p><p class="f-title">Purpose</p><p class="f-desc">Equip every person as a missionary to complete the Great Commission</p></div>
+      <div class="f-card"><p class="f-num">03</p><p class="f-title">Spirit</p><p class="f-desc">Gospel · Discipleship · Calling — the Triple School identity forming our core DNA</p></div>
+      <div class="f-card"><p class="f-num">04</p><p class="f-title">Mission</p><p class="f-desc">Guard truth, train whole-person missionaries, and evangelize every nation</p></div>
+      <div class="f-card"><p class="f-num">05</p><p class="f-title">Life Principles</p><p class="f-desc">Grow in spirituality, character, competence, and gospel witness — daily</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="history">
+  <div class="section-inner">
+    <div class="history-layout">
+      <div class="history-left">
+        <p class="section-eyebrow">God's History</p>
+        <h3>IM Mission<br>since 2006</h3>
+        <p>From a small youth community in Daejeon, God has grown IM Mission into an international movement spanning Korea, Philippines, USA, India, and beyond.</p>
+      </div>
+      <div>
+        <div class="tl-item"><span class="tl-year">2006</span><span class="tl-events">Founded in Daejeon · Michael English School established · Youth community ministry begins</span></div>
+        <div class="tl-item"><span class="tl-year">2007</span><span class="tl-events">Renamed IM Mission · English Vision Camp launched · IEM International School founded</span></div>
+        <div class="tl-item"><span class="tl-year">2009</span><span class="tl-events">First India short-term mission · Daejeon & Cheonan branch English schools opened</span></div>
+        <div class="tl-item"><span class="tl-year">2013</span><span class="tl-events">Philippines ANTS Seminary opens · IM Philippines branch established · MTS Youth School begins</span></div>
+        <div class="tl-item"><span class="tl-year">2016</span><span class="tl-events">Handal (한다살) national movement launched · CBUP educator training program starts</span></div>
+        <div class="tl-item"><span class="tl-year">2018</span><span class="tl-events">IM Overseas Mission HQ established in Philippines · CBUP 1st cohort graduates</span></div>
+        <div class="tl-item"><span class="tl-year">2019</span><span class="tl-events">Missions to USA, Mexico, China, Taiwan, Singapore · World Conference launched online</span></div>
+        <div class="tl-item"><span class="tl-year">2020–</span><span class="tl-events">Renew-Gen Community system · Han·Da·Se strategy · Brazil, Russia, Mongolia missions</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="gallery" style="background:var(--navy);padding-top:80px;padding-bottom:80px">
+  <div class="section-inner">
+    <p class="section-eyebrow" style="color:#5DCAA5">Mission Gallery</p>
+    <h2 class="section-title" style="color:#fff">Stories from <em style="color:#85B7EB">the field</em></h2>
+    <div class="gallery-grid" id="gallery-grid">
+      <div class="g-item g-large" style="background:#0C447C"><span>Philippines Mission</span></div>
+      <div class="g-item" style="background:#085041"><span>India</span></div>
+      <div class="g-item" style="background:#633806"><span>Camp</span></div>
+      <div class="g-item" style="background:#185FA5"><span>USA</span></div>
+      <div class="g-item" style="background:#3B6D11"><span>Handal</span></div>
+      <div class="g-item" style="background:#712B13"><span>Transform.</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="news">
+  <div class="section-inner">
+    <p class="section-eyebrow">News & Prayer</p>
+    <h2 class="section-title">Stay connected with <em>the mission</em></h2>
+    <div class="news-grid" id="news-grid">
+      <div class="n-card">
+        <div class="n-img" style="background:#0C447C"><span>Mission Photo</span></div>
+        <div class="n-body"><p class="n-cat">Mission News</p><p class="n-title">Philippines field update — new church planted in Mindanao</p><p class="n-date">Add your latest news here</p></div>
+      </div>
+      <div class="n-card">
+        <div class="n-img" style="background:#085041"><span>Prayer Photo</span></div>
+        <div class="n-body"><p class="n-cat">Prayer Request</p><p class="n-title">Pray for our missionaries on the field this month</p><p class="n-date">Add prayer requests here</p></div>
+      </div>
+      <div class="n-card">
+        <div class="n-img" style="background:#633806"><span>Camp Photo</span></div>
+        <div class="n-body"><p class="n-cat">Testimony</p><p class="n-title">How God moved at Transformation Camp</p><p class="n-date">Add testimonies here</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="support" class="support-bg">
+  <div class="support-inner">
+    <p class="section-eyebrow">Partner With Us</p>
+    <h2 class="section-title">Support the <em>mission</em></h2>
+    <p>Your partnership enables us to train missionaries, run camps, support local churches, and reach the unreached nations. Every contribution advances God's kingdom to the ends of the earth.</p>
+    <div class="support-options">
+      <div class="sup-opt"><p class="sup-opt-title">Monthly Giving</p><p class="sup-opt-desc">Regular support for ongoing field mission</p></div>
+      <div class="sup-opt"><p class="sup-opt-title">One-time Gift</p><p class="sup-opt-desc">Support a specific camp or mission trip</p></div>
+      <div class="sup-opt"><p class="sup-opt-title">Pray With Us</p><p class="sup-opt-desc">Receive weekly prayer updates from the field</p></div>
+    </div>
+    <a href="/cdn-cgi/l/email-protection#3a535757535453494e48437a535757535453494e4843145955145148" class="btn-primary" style="font-size:14px;padding:14px 36px">Contact Us to Partner</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-col">
+      <p class="footer-col-title">IM Mission</p>
+      <p>International Mission (IM선교회)</p>
+      <p style="margin-top:8px;font-size:11px;color:rgba(255,255,255,0.3)">Korean Mission · Mission Korea · Nations Mission</p>
+    </div>
+    <div class="footer-col">
+      <p class="footer-col-title">Contact</p>
+      <p class="footer-phone">Tel: 042.223.2414</p>
+      <a href="http://www.imministry.co.kr">www.imministry.co.kr</a>
+      <a href="/cdn-cgi/l/email-protection#523b3f3f3b3c3b2126202b123b3f3f3b3c3b2126202b7c313d7c3920" class="footer-email"><span class="__cf_email__" data-cfemail="fe9793939790978d8a8c87be9793939790978d8a8c87d09d91d0958c">[email&#160;protected]</span></a>
+    </div>
+    <div class="footer-col">
+      <p class="footer-col-title">Quick Links</p>
+      <a href="#about">About & Vision</a>
+      <a href="#ministry">Core Ministry</a>
+      <a href="#strategy">Han · Da · Se</a>
+      <a href="#history">Our History</a>
+      <a href="#news">News & Prayer</a>
+      <a href="#support">Support Us</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 International Mission (IM선교회). All rights reserved.</p>
+    <p>Matthew 24:14</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = 'https://illbgsjvhsciougzjgwn.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_EmIn4ZpTksxxbq7vXWTk4w_Wc38j9yH';
+  const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // ── 갤러리 불러오기 ──────────────────────────────
+  async function loadGallery() {
+    const { data: photos, error } = await _supabase
+      .from('gallery')
+      .select('*')
+      .order('id', { ascending: false });
+
+    if (error) { console.error('Gallery error:', error); return; }
+
+    const grid = document.getElementById('gallery-grid');
+    if (!grid) return;
+    if (!photos || photos.length === 0) return;
+
+    grid.innerHTML = photos.map((p, i) => `
+      <div class="g-item ${i === 0 ? 'g-large' : ''}" style="background:#0C447C;">
+        <img src="${p.photoUrl}" alt="${p.title || ''}"
+             style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;"
+             onerror="this.style.display='none'">
+        ${p.title ? `<span style="position:relative;z-index:1;color:rgba(255,255,255,0.85);font-size:11px;background:rgba(0,0,0,0.45);padding:3px 8px;border-radius:4px;">${p.title}</span>` : ''}
+      </div>
+    `).join('');
+  }
+
+  // ── 소식 & 기도제목 불러오기 ──────────────────────
+  async function loadNews() {
+    const { data: news, error } = await _supabase
+      .from('news')
+      .select('*')
+      .order('id', { ascending: false })
+      .limit(3);
+
+    if (error) { console.error('News error:', error); return; }
+
+    const grid = document.getElementById('news-grid');
+    if (!grid) return;
+    if (!news || news.length === 0) return;
+
+    grid.innerHTML = news.map(n => `
+      <div class="n-card" style="background:#fff;border:0.5px solid rgba(0,0,0,0.08);border-radius:8px;overflow:hidden;">
+        ${n.photoUrl
+          ? `<div class="n-img" style="height:160px;overflow:hidden;"><img src="${n.photoUrl}" style="width:100%;height:100%;object-fit:cover;"></div>`
+          : `<div class="n-img" style="height:160px;background:#0C447C;display:flex;align-items:center;justify-content:center;"><span style="color:rgba(255,255,255,0.4);font-size:12px;">Mission Photo</span></div>`
+        }
+        <div class="n-body" style="padding:16px;">
+          <p class="n-cat" style="font-size:10px;font-weight:500;color:#1D9E75;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.1em;">${n.category || ''}</p>
+          <p class="n-title" style="font-size:14px;font-weight:500;color:#1a1a1a;margin-bottom:6px;line-height:1.4;">${n.title || ''}</p>
+          <p class="n-date" style="font-size:11px;color:#6b6b6b;">${n.date || ''}</p>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // ── settings 불러오기 (배너 & 연락처) ────────────
+  async function loadSettings() {
+    const { data, error } = await _supabase.from('settings').select('*').eq('id', 1).single();
+    if (error || !data) return;
+    if (data.hero_eyebrow) { const el = document.getElementById('hero-eyebrow'); if (el) el.textContent = data.hero_eyebrow; }
+    if (data.hero_title)   { const el = document.getElementById('hero-title');   if (el) el.innerHTML  = data.hero_title; }
+    if (data.hero_verse)   { const el = document.getElementById('hero-verse');   if (el) el.textContent = data.hero_verse; }
+    if (data.phone) document.querySelectorAll('.footer-phone').forEach(el => el.textContent = 'Tel: ' + data.phone);
+    if (data.email) document.querySelectorAll('.footer-email').forEach(el => { el.textContent = data.email; el.href = 'mailto:' + data.email; });
+  }
+
+  // ── 페이지 로드 시 실행 ───────────────────────────
+  window.addEventListener('DOMContentLoaded', () => {
+    loadGallery();
+    loadNews();
+    loadSettings();
+  });
+</script>
+</body>
+</html>

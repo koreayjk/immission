@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IM Mission — 관리자 페이지</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #042C53; --blue: #185FA5; --blue-light: #E6F1FB;
+    --green: #1D9E75; --green-dark: #0F6E56;
+    --off-white: #F7F6F2; --border: rgba(0,0,0,0.1);
+    --text: #1a1a1a; --text-muted: #6b6b6b;
+    --red: #E24B4A; --amber: #BA7517;
+  }
+  body { font-family: 'DM Sans', sans-serif; color: var(--text); background: var(--off-white); min-height: 100vh; }
+
+  /* LAYOUT */
+  .admin-wrap { display: flex; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 220px; background: var(--navy); flex-shrink: 0;
+    display: flex; flex-direction: column; padding: 0;
+    position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  }
+  .sidebar-logo {
+    padding: 20px 20px 16px; border-bottom: 0.5px solid rgba(255,255,255,0.08);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sidebar-logo-mark {
+    width: 30px; height: 30px; border-radius: 50%;
+    border: 1.5px solid var(--green);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; color: #fff; flex-shrink: 0;
+  }
+  .sidebar-logo-text { font-size: 12px; color: rgba(255,255,255,0.6); line-height: 1.3; }
+  .sidebar-logo-text strong { display: block; color: #fff; font-size: 13px; }
+
+  .sidebar-nav { padding: 12px 0; flex: 1; }
+  .nav-section-label { font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.25); padding: 12px 20px 6px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 20px; font-size: 13px; color: rgba(255,255,255,0.55);
+    cursor: pointer; transition: all 0.15s; border-left: 2px solid transparent;
+    text-decoration: none;
+  }
+  .nav-item:hover { color: #fff; background: rgba(255,255,255,0.05); }
+  .nav-item.active { color: #fff; border-left-color: var(--green); background: rgba(255,255,255,0.08); }
+  .nav-item svg { width: 15px; height: 15px; flex-shrink: 0; opacity: 0.6; }
+  .nav-item.active svg, .nav-item:hover svg { opacity: 1; }
+
+  .sidebar-footer { padding: 16px 20px; border-top: 0.5px solid rgba(255,255,255,0.08); }
+  .preview-btn {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--green); text-decoration: none;
+    padding: 8px 12px; border-radius: 6px; border: 0.5px solid rgba(29,158,117,0.4);
+    transition: all 0.2s;
+  }
+  .preview-btn:hover { background: rgba(29,158,117,0.1); }
+
+  /* MAIN */
+  .main { flex: 1; padding: 32px; overflow-y: auto; }
+  .main-header { margin-bottom: 28px; }
+  .main-header h1 { font-size: 20px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .main-header p { font-size: 13px; color: var(--text-muted); }
+
+  /* PANELS */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* CARDS */
+  .card { background: #fff; border-radius: 10px; border: 0.5px solid var(--border); padding: 24px; margin-bottom: 20px; }
+  .card-title { font-size: 14px; font-weight: 500; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 0.5px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .card-title span { color: var(--text-muted); font-size: 12px; font-weight: 400; }
+
+  /* FORM */
+  .form-row { margin-bottom: 16px; }
+  .form-row label { display: block; font-size: 12px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 0.04em; }
+  .form-row input, .form-row textarea, .form-row select {
+    width: 100%; padding: 10px 12px; font-size: 13px; font-family: 'DM Sans', sans-serif;
+    border: 0.5px solid var(--border); border-radius: 6px; background: #fff;
+    color: var(--text); outline: none; transition: border-color 0.2s;
+  }
+  .form-row input:focus, .form-row textarea:focus { border-color: var(--blue); }
+  .form-row textarea { min-height: 80px; resize: vertical; line-height: 1.6; }
+  .form-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  /* BUTTONS */
+  .btn { font-size: 13px; font-weight: 500; padding: 9px 20px; border-radius: 6px; border: none; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+  .btn-save { background: var(--green); color: #fff; }
+  .btn-save:hover { background: var(--green-dark); }
+  .btn-delete { background: none; color: var(--red); border: 0.5px solid rgba(226,75,74,0.3); font-size: 12px; padding: 6px 14px; }
+  .btn-delete:hover { background: rgba(226,75,74,0.08); }
+  .btn-add { background: var(--blue-light); color: var(--blue); font-size: 12px; padding: 8px 16px; border: 0.5px solid rgba(24,95,165,0.2); }
+  .btn-add:hover { background: #B5D4F4; }
+  .btn-row { display: flex; gap: 10px; align-items: center; margin-top: 16px; }
+
+  /* PHOTO UPLOAD */
+  .upload-zone {
+    border: 1.5px dashed rgba(24,95,165,0.3); border-radius: 8px;
+    padding: 32px; text-align: center; cursor: pointer;
+    transition: all 0.2s; background: var(--blue-light);
+  }
+  .upload-zone:hover, .upload-zone.drag-over { border-color: var(--blue); background: #B5D4F4; }
+  .upload-zone input { display: none; }
+  .upload-icon { margin-bottom: 10px; }
+  .upload-zone p { font-size: 13px; color: var(--blue); margin-bottom: 4px; font-weight: 500; }
+  .upload-zone small { font-size: 11px; color: var(--text-muted); }
+
+  /* PHOTO GRID */
+  .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px,1fr)); gap: 10px; margin-top: 16px; }
+  .photo-item { position: relative; aspect-ratio: 1; border-radius: 6px; overflow: hidden; background: var(--off-white); border: 0.5px solid var(--border); }
+  .photo-item img { width: 100%; height: 100%; object-fit: cover; }
+  .photo-item-overlay {
+    position: absolute; inset: 0; background: rgba(0,0,0,0.5);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 6px; opacity: 0; transition: opacity 0.2s;
+  }
+  .photo-item:hover .photo-item-overlay { opacity: 1; }
+  .photo-item-label { font-size: 10px; color: #fff; font-weight: 500; }
+  .photo-item-del { font-size: 10px; color: rgba(255,100,100,0.9); cursor: pointer; background: none; border: none; font-family: inherit; }
+
+  /* NEWS ITEMS */
+  .news-item { padding: 16px; border: 0.5px solid var(--border); border-radius: 8px; margin-bottom: 12px; background: #fff; }
+  .news-item-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  .news-cat { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; }
+  .cat-news { background: #E1F5EE; color: #085041; }
+  .cat-prayer { background: #E6F1FB; color: #0C447C; }
+  .cat-testimony { background: #FAEEDA; color: #633806; }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+    background: var(--navy); color: #fff; font-size: 13px;
+    padding: 12px 20px; border-radius: 8px;
+    transform: translateY(80px); opacity: 0;
+    transition: all 0.3s; pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.success { border-left: 3px solid var(--green); }
+  .toast.error { border-left: 3px solid var(--red); }
+
+  /* STATS */
+  .stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 24px; }
+  .stat-card { background: #fff; border-radius: 8px; border: 0.5px solid var(--border); padding: 16px; }
+  .stat-label { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
+  .stat-value { font-size: 22px; font-weight: 500; color: var(--text); }
+  .stat-sub { font-size: 11px; color: var(--green); margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<div class="admin-wrap">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-mark">IM</div>
+      <div class="sidebar-logo-text"><strong>IM Mission</strong>관리자 페이지</div>
+    </div>
+    <nav class="sidebar-nav">
+      <p class="nav-section-label">콘텐츠 관리</p>
+      <div class="nav-item active" onclick="showPanel('dashboard')">
+        <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+        대시보드
+      </div>
+      <div class="nav-item" onclick="showPanel('hero')">
+        <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="14" height="9" rx="1.5"/><rect x="3" y="12" width="10" height="3" rx="1"/></svg>
+        메인 배너
+      </div>
+      <div class="nav-item" onclick="showPanel('gallery')">
+        <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="3" width="14" height="10" rx="1.5"/><circle cx="5.5" cy="7" r="1.5"/><path d="M1 11l4-4 3 3 2-2 5 4"/></svg>
+        갤러리 사진
+      </div>
+      <div class="nav-item" onclick="showPanel('news')">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 3h12v2H2zM2 7h8v2H2zM2 11h6v2H2z"/></svg>
+        소식 & 기도제목
+      </div>
+      <p class="nav-section-label">설정</p>
+      <div class="nav-item" onclick="showPanel('contact')">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2h12a1 1 0 011 1v8a1 1 0 01-1 1H2a1 1 0 01-1-1V3a1 1 0 011-1zm6 5l5-4H3l5 4zm0 1L3 4v7h10V4L8 8z"/></svg>
+        연락처 정보
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="index.html" target="_blank" class="preview-btn">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 3C4 3 1 8 1 8s3 5 7 5 7-5 7-5-3-5-7-5zm0 8a3 3 0 110-6 3 3 0 010 6z"/></svg>
+        홈페이지 미리보기
+      </a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- DASHBOARD -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="main-header">
+        <h1>대시보드</h1>
+        <p>IM Mission 홈페이지 관리 · 좌측 메뉴에서 수정할 항목을 선택하세요</p>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><p class="stat-label">갤러리 사진</p><p class="stat-value" id="stat-photos">0</p><p class="stat-sub">업로드된 사진</p></div>
+        <div class="stat-card"><p class="stat-label">소식 & 기도제목</p><p class="stat-value" id="stat-news">3</p><p class="stat-sub">등록된 항목</p></div>
+        <div class="stat-card"><p class="stat-label">마지막 수정</p><p class="stat-value" style="font-size:14px" id="stat-date">-</p><p class="stat-sub">저장 시간</p></div>
+        <div class="stat-card"><p class="stat-label">홈페이지</p><p class="stat-value" style="font-size:14px;color:var(--green)">운영중</p><p class="stat-sub">index.html</p></div>
+      </div>
+      <div class="card">
+        <p class="card-title">빠른 시작 가이드</p>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:var(--off-white);border-radius:8px">
+            <div style="width:24px;height:24px;border-radius:50%;background:var(--blue);color:#fff;font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</div>
+            <div><p style="font-size:13px;font-weight:500">갤러리 사진 업로드</p><p style="font-size:12px;color:var(--text-muted);margin-top:2px">좌측 "갤러리 사진" 클릭 → 사진 끌어다 놓기 → 저장</p></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:var(--off-white);border-radius:8px">
+            <div style="width:24px;height:24px;border-radius:50%;background:var(--blue);color:#fff;font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</div>
+            <div><p style="font-size:13px;font-weight:500">소식 & 기도제목 작성</p><p style="font-size:12px;color:var(--text-muted);margin-top:2px">좌측 "소식 & 기도제목" → 새 항목 추가 → 제목/내용/사진 입력</p></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:var(--off-white);border-radius:8px">
+            <div style="width:24px;height:24px;border-radius:50%;background:var(--blue);color:#fff;font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0">3</div>
+            <div><p style="font-size:13px;font-weight:500">연락처 정보 업데이트</p><p style="font-size:12px;color:var(--text-muted);margin-top:2px">좌측 "연락처 정보" → 전화번호, 이메일, 주소 수정</p></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:#E1F5EE;border-radius:8px">
+            <div style="width:24px;height:24px;border-radius:50%;background:var(--green);color:#fff;font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0">✓</div>
+            <div><p style="font-size:13px;font-weight:500;color:#085041">수정 후 Netlify에 재업로드</p><p style="font-size:12px;color:#0F6E56;margin-top:2px">모든 수정은 이 폴더 전체를 Netlify에 다시 드래그하면 반영돼요</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HERO PANEL -->
+    <div class="panel" id="panel-hero">
+      <div class="main-header">
+        <h1>메인 배너 수정</h1>
+        <p>홈페이지 첫 화면에 보이는 제목과 부제목을 수정합니다</p>
+      </div>
+      <div class="card">
+        <p class="card-title">배너 텍스트 <span>수정 후 저장하면 홈페이지에 반영됩니다</span></p>
+        <div class="form-row"><label>상단 소제목 (작은 글씨)</label><input type="text" id="hero-eyebrow" value="International Mission · Since 2006" placeholder="예: International Mission · Since 2006"></div>
+        <div class="form-row"><label>메인 제목 (큰 글씨)</label><input type="text" id="hero-title-input" value="Raising the Next Generation for World Missions" placeholder="메인 제목"></div>
+        <div class="form-row"><label>성경 말씀</label><textarea id="hero-verse-input" placeholder="성경 구절 입력">"And this gospel of the kingdom will be proclaimed throughout the whole world as a testimony to all nations, and then the end will come." — Matthew 24:14</textarea></div>
+        <div class="btn-row"><button class="btn btn-save" onclick="updateHero()">저장하기</button></div>
+      </div>
+    </div>
+
+    <!-- GALLERY PANEL -->
+    <div class="panel" id="panel-gallery">
+      <div class="main-header">
+        <h1>갤러리 사진 관리</h1>
+        <p>선교 활동 사진을 업로드하고 관리합니다</p>
+      </div>
+      <div class="card">
+        <p class="card-title">사진 업로드</p>
+        <div class="upload-zone" id="upload-zone" onclick="document.getElementById('gallery-photo-input').click()">
+          <input type="file" id="gallery-photo-input" multiple accept="image/*" onchange="handlePhotoUpload(event)" style="display:none;">
+          <div class="upload-icon">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+              <rect x="4" y="8" width="32" height="24" rx="3" stroke="#185FA5" stroke-width="1.5"/>
+              <circle cx="14" cy="18" r="3" stroke="#185FA5" stroke-width="1.5"/>
+              <path d="M4 28l9-9 6 6 4-4 9 9" stroke="#185FA5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <p>여기에 사진을 끌어다 놓거나 클릭해서 선택하세요</p>
+          <small>JPG, PNG, WEBP · 여러 장 동시 업로드 가능</small>
+        </div>
+        <div class="photo-grid" id="photo-grid"></div>
+        <div class="btn-row" style="margin-top:20px">
+          <button class="btn btn-save" onclick="saveGallery()">갤러리 저장하기</button>
+          <span style="font-size:12px;color:var(--text-muted)" id="photo-count">사진 0장</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEWS PANEL -->
+    <div class="panel" id="panel-news">
+      <div class="main-header">
+        <h1>소식 & 기도제목</h1>
+        <p>최신 선교 소식, 기도제목, 간증을 등록합니다</p>
+      </div>
+      <div class="card">
+        <p class="card-title">새 항목 추가</p>
+        <div class="form-2col">
+          <div class="form-row"><label>카테고리</label>
+            <select id="news-cat">
+              <option value="Mission News">Mission News (선교 소식)</option>
+              <option value="Prayer Request">Prayer Request (기도제목)</option>
+              <option value="Testimony">Testimony (간증)</option>
+            </select>
+          </div>
+          <div class="form-row"><label>날짜</label><input type="date" id="new-date"></div>
+        </div>
+        <div class="form-row"><label>제목</label><input type="text" id="news-title" placeholder="예: Philippines field update — new church planted"></div>
+        <div class="form-row"><label>내용 요약</label><textarea id="news-body" placeholder="소식 내용을 간략히 적어주세요"></textarea></div>
+        <div class="form-row">
+          <label>사진 업로드 (선택)</label>
+          <div class="upload-zone" style="padding:16px" onclick="document.getElementById('news-photo-input').click()">
+            <input type="file" id="news-photo-input" accept="image/*" onchange="handleNewsPhoto(event)">
+            <p style="font-size:12px">클릭해서 사진 선택</p>
+            <small id="news-photo-name">선택된 파일 없음</small>
+          </div>
+          <input type="text" id="news-photo" placeholder="사진 주소(URL)를 입력하세요" style="margin-top:10px;">
+        </div>
+        <div class="btn-row"><button class="btn btn-add" onclick="saveNews()">+ 항목 추가</button></div>
+      </div>
+
+      <div id="news-list"></div>
+    </div>
+
+    <!-- CONTACT PANEL -->
+    <div class="panel" id="panel-contact">
+      <div class="main-header">
+        <h1>연락처 정보</h1>
+        <p>홈페이지 하단에 표시되는 연락처 정보를 수정합니다</p>
+      </div>
+      <div class="card">
+        <p class="card-title">연락처 정보</p>
+        <div class="form-2col">
+          <div class="form-row"><label>단체명 (영문)</label><input type="text" id="org-name" value="International Mission (IM선교회)"></div>
+          <div class="form-row"><label>전화번호</label><input type="text" id="org-phone" value="042.223.2414"></div>
+        </div>
+        <div class="form-2col">
+          <div class="form-row"><label>웹사이트</label><input type="text" id="org-web" value="www.imministry.co.kr"></div>
+          <div class="form-row"><label>이메일</label><input type="email" id="org-email" value="imministry@imministry.co.kr"></div>
+        </div>
+        <div class="form-row"><label>주소</label><input type="text" id="org-address" placeholder="주소 입력 (선택)"></div>
+        <div class="btn-row"><button class="btn btn-save" onclick="updateContactInfo()">저장하기</button></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  // 1. 보안 및 초기 설정
+  const adminPassword = prompt("관리자 암호를 입력하세요:");
+  if (adminPassword !== "2414") { 
+    alert("권한이 없습니다.");
+    location.href = "index.html"; 
+  }
+
+  const SUPABASE_URL = 'https://illbgsjvhsciougzjgwn.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_EmIn4ZpTksxxbq7vXWTk4w_Wc38j9yH'; // 목사님 실제 키 확인 필요
+  const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // 2. 화면 전환 (모든 메뉴 작동)
+  function showPanel(panelId) {
+    const panels = document.querySelectorAll('.panel');
+    panels.forEach(p => p.style.display = 'none');
+    const target = document.getElementById('panel-' + panelId);
+    if (target) target.style.display = 'block';
+    
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(i => i.classList.remove('active'));
+    if (event && event.currentTarget) event.currentTarget.classList.add('active');
+  }
+
+  // 3. 사진 파일 업로드 핵심 함수
+  async function uploadFile(fileInputId) {
+    const file = document.getElementById(fileInputId).files[0];
+    if (!file) return null;
+
+    const fileName = `${Date.now()}_${file.name}`; // 파일명 중복 방지
+    const { data, error } = await _supabase.storage
+      .from('photos')
+      .upload(fileName, file);
+
+    if (error) {
+      console.error('Upload error:', error);
+      return null;
+    }
+    // 업로드된 사진의 공개 주소 생성
+    const { data: publicUrl } = _supabase.storage.from('photos').getPublicUrl(fileName);
+    return publicUrl.publicUrl;
+  }
+
+  // 4. [소식 & 기도제목] 저장 기능
+  async function saveNews() {
+    const title = document.getElementById('news-title').value.trim();
+    if (!title) { alert('제목을 입력해주세요.'); return; }
+
+    const body = document.getElementById('news-body').value;
+    const urlInput = document.getElementById('news-photo');
+    let photoUrl = await uploadFile('news-photo-input');
+    if (!photoUrl && urlInput) photoUrl = urlInput.value.trim() || null;
+
+    const { error } = await _supabase.from('news').insert([{
+      title, body,
+      category: document.getElementById('news-cat').value,
+      photoUrl: photoUrl || null,
+      date: new Date().toLocaleDateString('ko-KR')
+    }]);
+
+    if (error) alert('실패: ' + error.message);
+    else {
+      alert('게시 성공!');
+      document.getElementById('news-title').value = '';
+      document.getElementById('news-body').value = '';
+      document.getElementById('news-photo-name').innerText = '선택된 파일 없음';
+      if (urlInput) urlInput.value = '';
+      renderNews();
+    }
+  }
+
+  // 5. [갤러리 사진] 저장 기능 — 여러 장 동시 업로드 지원
+  async function saveGallery() {
+    try {
+      const fileInput = document.getElementById('gallery-photo-input');
+      const files = fileInput ? Array.from(fileInput.files) : [];
+
+      if (files.length === 0) {
+        return alert('사진 파일을 먼저 선택해주세요!');
+      }
+
+      const countEl = document.getElementById('photo-count');
+      if (countEl) countEl.innerText = '업로드 중...';
+
+      let successCount = 0;
+      for (const file of files) {
+        const fileName = `${Date.now()}_${Math.random().toString(36).slice(2)}_${file.name}`;
+        const { error: upErr } = await _supabase.storage.from('photos').upload(fileName, file);
+        if (upErr) { console.error('Upload error:', upErr); continue; }
+
+        const { data: pub } = _supabase.storage.from('photos').getPublicUrl(fileName);
+        const photoUrl = pub.publicUrl;
+
+        const { error: dbErr } = await _supabase.from('gallery').insert([{ title: file.name, photoUrl }]);
+        if (!dbErr) successCount++;
+      }
+
+      if (successCount > 0) {
+        alert(`${successCount}장 업로드 완료!`);
+        fileInput.value = '';
+        renderGallery();
+      } else {
+        alert('업로드에 실패했습니다. Supabase Storage 설정을 확인해주세요.');
+      }
+    } catch (err) {
+      alert('오류 발생: ' + err.message);
+    }
+  }
+
+  // 5-1. 갤러리 목록 불러오기 & 화면에 표시
+  async function renderGallery() {
+    const { data: photos, error } = await _supabase
+      .from('gallery').select('*').order('id', { ascending: false });
+
+    const grid = document.getElementById('photo-grid');
+    const countEl = document.getElementById('photo-count');
+    if (!grid) return;
+
+    if (!photos || photos.length === 0) {
+      grid.innerHTML = '<p style="font-size:12px;color:var(--text-muted);padding:12px 0">아직 업로드된 사진이 없어요</p>';
+      if (countEl) countEl.innerText = '사진 0장';
+      document.getElementById('stat-photos') && (document.getElementById('stat-photos').innerText = 0);
+      return;
+    }
+
+    if (countEl) countEl.innerText = `사진 ${photos.length}장`;
+    document.getElementById('stat-photos') && (document.getElementById('stat-photos').innerText = photos.length);
+
+    grid.innerHTML = photos.map(p => `
+      <div class="photo-item">
+        <img src="${p.photoUrl}" alt="${p.title || ''}">
+        <div class="photo-item-overlay">
+          <span class="photo-item-label">${(p.title || '').length > 16 ? (p.title||'').slice(0,14)+'...' : (p.title||'')}</span>
+          <button class="photo-item-del" onclick="deleteGalleryPhoto(${p.id})">✕ 삭제</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // 5-2. 갤러리 사진 삭제
+  async function deleteGalleryPhoto(id) {
+    if (!confirm('이 사진을 삭제하시겠습니까?')) return;
+    const { error } = await _supabase.from('gallery').delete().eq('id', id);
+    if (error) alert('삭제 실패: ' + error.message);
+    else renderGallery();
+  }
+
+ // 6. 메인 배너 실제 저장 기능
+  async function updateHero() {
+    const eyebrow = document.getElementById('hero-eyebrow').value;
+    const title = document.getElementById('hero-title-input').value;
+    const verse = document.getElementById('hero-verse-input').value;
+
+    const { error } = await _supabase.from('settings').update({ 
+      hero_eyebrow: eyebrow, 
+      hero_title: title, 
+      hero_verse: verse 
+    }).eq('id', 1);
+
+    if (error) alert('배너 수정 실패: ' + error.message);
+    else alert('메인 배너가 수정되었습니다!');
+  }
+
+  // 7. 연락처 정보 실제 저장 기능
+  async function updateContactInfo() {
+    const phone = document.getElementById('org-phone').value;
+    const email = document.getElementById('org-email').value;
+    const address = document.getElementById('org-address').value;
+
+    const { error } = await _supabase.from('settings').update({ 
+      phone: phone, 
+      email: email, 
+      address: address 
+    }).eq('id', 1);
+
+    if (error) alert('연락처 수정 실패: ' + error.message);
+    else alert('연락처 정보가 수정되었습니다!');
+  }
+
+  // 8. 파일 선택 시 이름 표시 기능 (디자인을 위해 꼭 필요합니다)
+  function handleNewsPhoto(event) {
+    const name = event.target.files[0]?.name || "선택된 파일 없음";
+    document.getElementById('news-photo-name').innerText = name;
+  }
+  
+  function handlePhotoUpload(event) {
+    const count = event.target.files.length;
+    const countSpan = document.getElementById('photo-count');
+    if(countSpan) countSpan.innerText = `사진 ${count}장 선택됨`;
+  }
+
+  // 9. 소식 삭제 기능
+  async function deleteNews(id) {
+    if(confirm('정말 삭제하시겠습니까?')) {
+      const { error } = await _supabase.from('news').delete().eq('id', id);
+      if (error) alert('삭제 실패');
+      else renderNews();
+    }
+  }
+
+  // 10. 소식 목록 화면에 뿌려주기
+  async function renderNews() {
+    const { data: news } = await _supabase.from('news').select('*').order('id', { ascending: false });
+    const listDiv = document.getElementById('news-list');
+    const catClassMap = {
+      'Mission News': 'cat-news',
+      'Prayer Request': 'cat-prayer',
+      'Testimony': 'cat-testimony'
+    };
+    if (news && listDiv) {
+      if (news.length === 0) {
+        listDiv.innerHTML = '<p style="font-size:12px;color:var(--text-muted);padding:12px 0">등록된 항목이 없어요</p>';
+        return;
+      }
+      listDiv.innerHTML = news.map(n => `
+        <div class="news-item">
+          <div class="news-item-header">
+            <div>
+              <span class="news-cat ${catClassMap[n.category] || 'cat-news'}">${n.category}</span>
+              <h4 style="margin-top:8px;font-size:14px;font-weight:500;">${n.title}</h4>
+              <small style="color:#888;">${n.date || ''}</small>
+            </div>
+            <button class="btn btn-delete" onclick="deleteNews(${n.id})">삭제</button>
+          </div>
+          ${n.photoUrl ? `<img src="${n.photoUrl}" style="width:100%;height:100px;object-fit:cover;border-radius:6px;margin-top:8px;">` : ''}
+          ${n.body ? `<p style="font-size:12px;color:var(--text-muted);margin-top:8px;line-height:1.6;">${n.body}</p>` : ''}
+        </div>
+      `).join('');
+      const statNews = document.getElementById('stat-news');
+      if (statNews) statNews.innerText = news.length;
+    }
+  }
+
+  // settings 테이블에서 기존 배너/연락처 값 불러오기
+  async function loadSettings() {
+    const { data, error } = await _supabase.from('settings').select('*').eq('id', 1).single();
+    if (error || !data) return;
+    if (data.hero_eyebrow) document.getElementById('hero-eyebrow').value = data.hero_eyebrow;
+    if (data.hero_title) document.getElementById('hero-title-input').value = data.hero_title;
+    if (data.hero_verse) document.getElementById('hero-verse-input').value = data.hero_verse;
+    if (data.phone) document.getElementById('org-phone').value = data.phone;
+    if (data.email) document.getElementById('org-email').value = data.email;
+    if (data.address) document.getElementById('org-address').value = data.address;
+  }
+
+  // 페이지 로드 시 데이터 불러오기
+  window.onload = function() {
+    renderNews();
+    renderGallery();
+    loadSettings();
+    const today = new Date().toISOString().split('T')[0];
+    const dateEl = document.getElementById('new-date');
+    if (dateEl) dateEl.value = today;
+  };
+</script>
+</body>
+</html>
