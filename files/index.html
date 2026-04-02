@@ -377,14 +377,14 @@
   <div class="footer-inner">
     <div class="footer-col">
       <p class="footer-col-title">IM Mission</p>
-      <p>International Mission (IM선교회)</p>
+      <p id="footer-orgname">International Mission (IM선교회)</p>
       <p style="margin-top:8px;font-size:11px;color:rgba(255,255,255,0.3)">Korean Mission · Mission Korea · Nations Mission</p>
     </div>
     <div class="footer-col">
       <p class="footer-col-title">Contact</p>
-      <p class="footer-phone">Tel: 042.223.2414</p>
-      <a href="http://www.imministry.co.kr">www.imministry.co.kr</a>
-      <a href="#" onclick="window.location.href='mail'+'to:imministry'+'@'+'imministry.co.kr';return false;" class="footer-email">imministry@imministry.co.kr</a>
+      <p class="footer-phone" id="footer-phone">Tel: 042.223.2414</p>
+      <a href="http://www.imministry.co.kr" id="footer-web">www.imministry.co.kr</a>
+      <a href="#" onclick="window.location.href='mail'+'to:imministry'+'@'+'imministry.co.kr';return false;" class="footer-email" id="footer-email">imministry@imministry.co.kr</a>
     </div>
     <div class="footer-col">
       <p class="footer-col-title">Quick Links</p>
@@ -402,7 +402,7 @@
   </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const SUPABASE_URL = 'https://illbgsjvhsciougzjgwn.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_EmIn4ZpTksxxbq7vXWTk4w_Wc38j9yH';
@@ -459,10 +459,30 @@
       </div>
     `).join('');
   }
+  // ── 페이지 로드 시 
+  // ── 연락처 불러오기 (배너 건드리지 않음) ──────────
+  async function loadSettings() {
+    try {
+      const { data, error } = await _supabase.from('settings').select('*').limit(1).single();
+      if (error || !data) return;
+      if (data.org_name && data.org_name.trim()) { const el = document.getElementById('footer-orgname'); if (el) el.textContent = data.org_name; }
+      if (data.phone && data.phone.trim()) { const el = document.getElementById('footer-phone'); if (el) el.textContent = 'Tel: ' + data.phone; }
+      if (data.website && data.website.trim()) { const el = document.getElementById('footer-web'); if (el) { el.textContent = data.website; el.href = 'http://' + data.website.replace(/^https?:\/\//, ''); } }
+      if (data.email && data.email.trim()) {
+        const em = data.email.trim();
+        const ef = document.getElementById('footer-email');
+        if (ef) { ef.textContent = em; ef.onclick = () => { window.location.href = 'mailto:' + em; return false; }; }
+        const eb = document.querySelector('a.btn-primary[onclick*="imministry"]');
+        if (eb) eb.onclick = () => { window.location.href = 'mailto:' + em; return false; };
+      }
+    } catch(e) { console.log('Settings skipped:', e); }
+  }
+
   // ── 페이지 로드 시 실행 ───────────────────────────
   window.addEventListener('DOMContentLoaded', () => {
     loadGallery();
     loadNews();
+    loadSettings();
   });
 </script>
 </body>
