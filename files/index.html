@@ -462,13 +462,17 @@
 
   // ── settings 불러오기 (배너 & 연락처) ────────────
   async function loadSettings() {
-    const { data, error } = await _supabase.from('settings').select('*').eq('id', 1).single();
-    if (error || !data) return;
-    if (data.hero_eyebrow) { const el = document.getElementById('hero-eyebrow'); if (el) el.textContent = data.hero_eyebrow; }
-    if (data.hero_title)   { const el = document.getElementById('hero-title');   if (el) el.innerHTML  = data.hero_title; }
-    if (data.hero_verse)   { const el = document.getElementById('hero-verse');   if (el) el.textContent = data.hero_verse; }
-    if (data.phone) document.querySelectorAll('.footer-phone').forEach(el => el.textContent = 'Tel: ' + data.phone);
-    if (data.email) document.querySelectorAll('.footer-email').forEach(el => { el.textContent = data.email; el.href = 'mailto:' + data.email; });
+    try {
+      const { data, error } = await _supabase.from('settings').select('*').limit(1).single();
+      if (error || !data) return;
+      if (data.hero_eyebrow && data.hero_eyebrow.trim()) { const el = document.getElementById('hero-eyebrow'); if (el) el.textContent = data.hero_eyebrow; }
+      if (data.hero_title   && data.hero_title.trim())   { const el = document.getElementById('hero-title');   if (el) el.innerHTML  = data.hero_title; }
+      if (data.hero_verse   && data.hero_verse.trim())   { const el = document.getElementById('hero-verse');   if (el) el.textContent = data.hero_verse; }
+      if (data.phone && data.phone.trim()) document.querySelectorAll('.footer-phone').forEach(el => el.textContent = 'Tel: ' + data.phone);
+      if (data.email && data.email.trim()) document.querySelectorAll('.footer-email').forEach(el => { el.textContent = data.email; el.href = 'mailto:' + data.email; });
+    } catch(e) {
+      console.log('Settings load skipped:', e);
+    }
   }
 
   // ── 페이지 로드 시 실행 ───────────────────────────
