@@ -179,10 +179,6 @@
         소식 & 기도제목
       </div>
       <p class="nav-section-label">설정</p>
-      <div class="nav-item" onclick="showPanel('videos')">
-        <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="2" width="14" height="10" rx="1.5"/><polygon points="6,5 11,7 6,9" fill="white"/></svg>
-        영상 관리
-      </div>
       <div class="nav-item" onclick="showPanel('contact')">
         <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2h12a1 1 0 011 1v8a1 1 0 01-1 1H2a1 1 0 01-1-1V3a1 1 0 011-1zm6 5l5-4H3l5 4zm0 1L3 4v7h10V4L8 8z"/></svg>
         연락처 정보
@@ -312,37 +308,6 @@
       <div id="news-list"></div>
     </div>
 
-    <!-- VIDEOS PANEL -->
-    <div class="panel" id="panel-videos">
-      <div class="main-header">
-        <h1>영상 관리</h1>
-        <p>각 채널의 유튜브 영상을 등록하고 관리합니다</p>
-      </div>
-      <div class="card">
-        <p class="card-title">새 영상 추가</p>
-        <div class="form-2col">
-          <div class="form-row"><label>채널 선택</label>
-            <select id="video-channel">
-              <option value="im">IM선교회</option>
-              <option value="korea">한국본부</option>
-              <option value="philippines">필리핀본부</option>
-              <option value="usa">미국본부</option>
-              <option value="thailand">태국</option>
-            </select>
-          </div>
-          <div class="form-row"><label>날짜</label><input type="date" id="video-date"></div>
-        </div>
-        <div class="form-row"><label>유튜브 링크</label><input type="text" id="video-url" placeholder="https://www.youtube.com/watch?v=..."></div>
-        <div class="form-row"><label>영상 제목</label><input type="text" id="video-title" placeholder="영상 제목을 입력하세요"></div>
-        <div id="video-preview" style="margin-top:12px;display:none">
-          <label style="font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:8px;display:block">미리보기</label>
-          <img id="video-thumb" src="" style="width:200px;border-radius:8px;border:0.5px solid var(--border)">
-        </div>
-        <div class="btn-row"><button class="btn btn-add" onclick="previewVideo()">미리보기 확인</button><button class="btn btn-save" onclick="saveVideo()">영상 추가</button></div>
-      </div>
-      <div id="video-list"></div>
-    </div>
-
     <!-- CONTACT PANEL -->
     <div class="panel" id="panel-contact">
       <div class="main-header">
@@ -373,6 +338,13 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
+  function showToast(msg, type='success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show ' + type;
+    setTimeout(() => t.className = 'toast', 2500);
+  }
+
   // 1. 보안 및 초기 설정
   const adminPassword = prompt("관리자 암호를 입력하세요:");
   if (adminPassword !== "2414") { 
@@ -500,23 +472,32 @@
     if (countEl) countEl.innerText = `사진 ${photos.length}장`;
     document.getElementById('stat-photos') && (document.getElementById('stat-photos').innerText = photos.length);
 
-    grid.innerHTML = photos.map(p => `
+    grid.innerHTML = photos.map(p => {
+      const deleteKey = p.id ? `id-${p.id}` : `url-${encodeURIComponent(p.photoUrl)}`;
+      return `
       <div class="photo-item">
         <img src="${p.photoUrl}" alt="${p.title || ''}">
         <div class="photo-item-overlay">
           <span class="photo-item-label">${(p.title || '').length > 16 ? (p.title||'').slice(0,14)+'...' : (p.title||'')}</span>
-          <button class="photo-item-del" onclick="deleteGalleryPhoto(${p.id})">✕ 삭제</button>
+          <button class="photo-item-del" onclick="deleteGalleryPhoto('${deleteKey}')">✕ 삭제</button>
         </div>
-      </div>
-    `).join('');
+      </div>`;
+    }).join('');
   }
 
   // 5-2. 갤러리 사진 삭제
-  async function deleteGalleryPhoto(id) {
+  async function deleteGalleryPhoto(key) {
     if (!confirm('이 사진을 삭제하시겠습니까?')) return;
-    const { error } = await _supabase.from('gallery').delete().eq('id', id);
+    let error;
+    if (key.startsWith('id-')) {
+      const id = parseInt(key.replace('id-', ''));
+      ({ error } = await _supabase.from('gallery').delete().eq('id', id));
+    } else {
+      const photoUrl = decodeURIComponent(key.replace('url-', ''));
+      ({ error } = await _supabase.from('gallery').delete().eq('photoUrl', photoUrl));
+    }
     if (error) alert('삭제 실패: ' + error.message);
-    else renderGallery();
+    else { showToast('사진이 삭제되었습니다'); renderGallery(); }
   }
 
  // 6. 메인 배너 실제 저장 기능
@@ -566,6 +547,7 @@
   // 9. 소식 삭제 기능
   async function deleteNews(id) {
     if(confirm('정말 삭제하시겠습니까?')) {
+      if (!id) { alert('삭제할 수 없습니다 (ID 없음)'); return; }
       const { error } = await _supabase.from('news').delete().eq('id', id);
       if (error) alert('삭제 실패');
       else renderNews();
@@ -617,81 +599,14 @@
     if (data.address) document.getElementById('org-address').value = data.address;
   }
 
-
-  // ── 영상 관리 ──────────────────────────────────
-  function getYoutubeId(url) {
-    const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]+)/);
-    return match ? match[1] : null;
-  }
-
-  function previewVideo() {
-    const url = document.getElementById('video-url').value.trim();
-    const vid = getYoutubeId(url);
-    if (!vid) { alert('올바른 유튜브 링크를 입력해주세요.'); return; }
-    const thumb = document.getElementById('video-thumb');
-    thumb.src = `https://img.youtube.com/vi/${vid}/mqdefault.jpg`;
-    document.getElementById('video-preview').style.display = 'block';
-  }
-
-  async function saveVideo() {
-    const url = document.getElementById('video-url').value.trim();
-    const title = document.getElementById('video-title').value.trim();
-    const channel = document.getElementById('video-channel').value;
-    const date = document.getElementById('video-date').value;
-    if (!url) { alert('유튜브 링크를 입력해주세요.'); return; }
-    if (!title) { alert('제목을 입력해주세요.'); return; }
-    const { error } = await _supabase.from('videos').insert([{ youtube_url: url, title, channel, date }]);
-    if (error) { alert('저장 실패: ' + error.message); return; }
-    document.getElementById('video-url').value = '';
-    document.getElementById('video-title').value = '';
-    document.getElementById('video-preview').style.display = 'none';
-    showToast('영상이 추가되었습니다 ✓');
-    renderVideos();
-  }
-
-  async function deleteVideo(id) {
-    if (!confirm('이 영상을 삭제하시겠습니까?')) return;
-    const { error } = await _supabase.from('videos').delete().eq('id', id);
-    if (error) { alert('삭제 실패'); return; }
-    renderVideos();
-    showToast('삭제되었습니다');
-  }
-
-  async function renderVideos() {
-    const channel = document.getElementById('video-channel')?.value || 'im';
-    const { data: videos } = await _supabase.from('videos').select('*').order('id', { ascending: false });
-    const listDiv = document.getElementById('video-list');
-    if (!listDiv || !videos) return;
-    const NAMES = { im: 'IM선교회', korea: '한국본부', philippines: '필리핀본부', usa: '미국본부', thailand: '태국' };
-    listDiv.innerHTML = videos.map(v => {
-      const vid = getYoutubeId(v.youtube_url);
-      const thumb = vid ? `https://img.youtube.com/vi/${vid}/mqdefault.jpg` : '';
-      return `<div class="news-item card" style="display:flex;gap:14px;align-items:flex-start">
-        ${thumb ? `<img src="${thumb}" style="width:100px;border-radius:6px;flex-shrink:0">` : ''}
-        <div style="flex:1">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
-            <span class="news-cat cat-news">${NAMES[v.channel] || v.channel}</span>
-            <button class="btn btn-delete" onclick="deleteVideo(${v.id})">삭제</button>
-          </div>
-          <p style="font-size:13px;font-weight:500;margin-bottom:4px">${v.title}</p>
-          <p style="font-size:11px;color:var(--text-muted)">${v.date || ''}</p>
-          <a href="${v.youtube_url}" target="_blank" style="font-size:11px;color:var(--blue);margin-top:4px;display:inline-block">YouTube 바로가기 →</a>
-        </div>
-      </div>`;
-    }).join('') || '<p style="font-size:13px;color:var(--text-muted);padding:16px">등록된 영상이 없습니다</p>';
-  }
-
   // 페이지 로드 시 데이터 불러오기
   window.onload = function() {
     renderNews();
     renderGallery();
     loadSettings();
-    renderVideos();
     const today = new Date().toISOString().split('T')[0];
     const dateEl = document.getElementById('new-date');
     if (dateEl) dateEl.value = today;
-    const videoDateEl = document.getElementById('video-date');
-    if (videoDateEl) videoDateEl.value = today;
   };
 </script>
 </body>
