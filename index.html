@@ -212,6 +212,13 @@
   .qr-modal-sub { font-size: 12px; color: #6b6b6b; margin-bottom: 20px; line-height: 1.5; }
   .qr-modal-img { width: 200px; height: 200px; margin: 0 auto 16px; display: block; border-radius: 8px; }
   .qr-modal-info { font-size: 11px; color: #6b6b6b; line-height: 1.6; }
+  .country-base { fill: #0C3D6B; stroke: #042C53; stroke-width: 0.5; }
+  .country-active { fill: #1D9E75 !important; }
+  .pin-ring { fill: none; stroke: #1D9E75; stroke-width: 1.5; opacity: 0.4; animation: mppulse 2.5s infinite; }
+  .pin-dot { fill: #1D9E75; }
+  .pin-center { fill: #fff; }
+  .pin-label { font-size: 11px; font-weight: 600; fill: #fff; font-family: sans-serif; pointer-events: none; }
+  @keyframes mppulse { 0%,100% { r: 9; opacity: 0.4; } 50% { r: 13; opacity: 0.15; } }
 </style>
 </head>
 <body>
@@ -265,7 +272,60 @@
     </div>
   </div>
 </section>
-
+<!-- WORLD MAP -->
+    <div style="margin-top:56px">
+      <div id="world-map-wrap" style="background:#042C53;border-radius:16px;padding:32px 24px 24px;position:relative;overflow:hidden">
+        <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none"></div>
+        <p style="font-size:11px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:#1D9E75;margin-bottom:6px;position:relative">Our Mission Fields</p>
+        <p style="font-size:18px;font-weight:300;color:#fff;margin-bottom:20px;font-family:'Cormorant Garamond',serif;position:relative">Reaching the nations — <em style="font-style:italic;color:#85B7EB">9 countries</em></p>
+        <div id="map-svg-wrap">
+          <svg id="world-svg" viewBox="0 0 960 500"></svg>
+        </div>
+        <div style="display:flex;gap:20px;justify-content:center;margin-top:16px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:rgba(255,255,255,0.5)"><div style="width:8px;height:8px;border-radius:50%;background:#1D9E75"></div>Active mission field</div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+    <script>
+    (function() {
+      const missions = [
+        { name: 'Korea',       coords: [127.0, 37.5],  dx: 8,   dy: -10, anchor: 'start' },
+        { name: 'Japan',       coords: [139.7, 35.7],  dx: 24,   dy: -10, anchor: 'start' },
+        { name: 'China',       coords: [116.4, 39.9],  dx: -8,  dy: -12, anchor: 'end' },
+        { name: 'Philippines', coords: [121.0, 14.6],  dx: 8,   dy: -10, anchor: 'start' },
+        { name: 'Thailand',    coords: [100.5, 13.7],  dx: -8,  dy: -10, anchor: 'end' },
+        { name: 'Malaysia',    coords: [101.7, 3.1],   dx: 8,   dy: 14,  anchor: 'start' },
+        { name: 'India',       coords: [77.2, 28.6],   dx: -8,  dy: -10, anchor: 'end' },
+        { name: 'Pakistan',    coords: [67.0, 24.9],   dx: -8,  dy: 14,  anchor: 'end' },
+        { name: 'USA',         coords: [-118.2, 34.1], dx: 0,   dy: -14, anchor: 'middle' },
+      ];
+      const missionIds = new Set(['410','156','608','764','458','356','586','392','840']);
+      const W = 960, H = 500;
+      const svg = d3.select('#world-svg');
+      const proj = d3.geoNaturalEarth1().scale(153).translate([W/2, H/2]);
+      const pathGen = d3.geoPath(proj);
+      d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(world => {
+        const features = topojson.feature(world, world.objects.countries).features;
+        svg.selectAll('path').data(features).join('path')
+          .attr('class', d => missionIds.has(d.id) ? 'country-base country-active' : 'country-base')
+          .attr('d', pathGen);
+        const pins = svg.selectAll('g.pin').data(missions).join('g').attr('class','pin')
+          .attr('transform', d => { const [x,y] = proj(d.coords); return `translate(${x},${y})`; });
+        pins.append('circle').attr('class','pin-ring').attr('r',9);
+        pins.append('circle').attr('class','pin-dot').attr('r',5);
+        pins.append('circle').attr('class','pin-center').attr('r',2.5);
+        pins.each(function(d) {
+          const g = d3.select(this);
+          const w = d.name.length * 6.2 + 10;
+          const bx = d.anchor === 'end' ? d.dx - w + 4 : d.anchor === 'middle' ? -w/2 : d.dx - 4;
+          g.append('rect').attr('x', bx).attr('y', d.dy - 12).attr('width', w).attr('height', 16).attr('rx', 3).attr('fill','rgba(4,28,60,0.82)');
+          g.append('text').attr('class','pin-label').attr('x', d.dx).attr('y', d.dy).attr('text-anchor', d.anchor).attr('dominant-baseline','middle').text(d.name);
+        });
+      });
+    })();
+    </script>
 <section id="ministry" class="ministry-bg">
   <div class="section-inner">
     <p class="section-eyebrow">Core Ministry</p>
