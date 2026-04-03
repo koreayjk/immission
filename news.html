@@ -146,7 +146,7 @@ function getCatClass(cat) {
 function renderCards(news, append = false) {
   const grid = document.getElementById('news-grid');
   const cards = news.map(n => `
-    <div class="n-card">
+    <a class="n-card" href="news-detail.html?id=${n.id}" style="text-decoration:none;color:inherit;display:block;">
       <div class="n-img">
         ${n.photoUrl
           ? `<img src="${n.photoUrl}" alt="${n.title||''}" onclick="openLightbox('${n.photoUrl}')" style="cursor:zoom-in;">`
@@ -158,7 +158,7 @@ function renderCards(news, append = false) {
         ${n.body ? `<p class="n-body-text">${n.body}</p>` : ''}
         <p class="n-date">${n.date||''}</p>
       </div>
-    </div>`).join('');
+    </a>`).join('');
 
   if (append) {
     grid.innerHTML += cards;
