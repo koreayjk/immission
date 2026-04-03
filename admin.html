@@ -306,6 +306,15 @@
           </div>
           <input type="text" id="news-photo" placeholder="사진 주소(URL)를 입력하세요" style="margin-top:10px;">
         </div>
+       <div class="form-row">
+          <label>본문 사진 (게시글에서 보이는 큰 사진)</label>
+          <div class="upload-zone" style="padding:16px" onclick="document.getElementById('news-content-photo-input').click()">
+            <input type="file" id="news-content-photo-input" accept="image/*" onchange="handleNewsContentPhoto(event)">
+            <p style="font-size:12px">클릭해서 본문 사진 선택</p>
+            <small id="news-content-photo-name">선택된 파일 없음</small>
+          </div>
+          <input type="text" id="news-content-photo" placeholder="또는 본문 사진 URL 직접 입력" style="margin-top:10px;">
+        </div>
         <div class="btn-row"><button class="btn btn-add" onclick="saveNews()">+ 항목 추가</button></div>
       </div>
 
@@ -435,11 +444,14 @@
     const urlInput = document.getElementById('news-photo');
     let photoUrl = await uploadFile('news-photo-input');
     if (!photoUrl && urlInput) photoUrl = urlInput.value.trim() || null;
-
+  const contentUrlInput = document.getElementById('news-content-photo');
+let contentPhotoUrl = await uploadFile('news-content-photo-input');
+if (!contentPhotoUrl) contentPhotoUrl = contentUrlInput?.value.trim() || null;
     const { error } = await _supabase.from('news').insert([{
       title, body,
       category: document.getElementById('news-cat').value,
       photoUrl: photoUrl || null,
+     contentPhotoUrl: contentPhotoUrl || null,
       date: new Date().toLocaleDateString('ko-KR')
     }]);
 
@@ -576,13 +588,16 @@
     const name = event.target.files[0]?.name || "선택된 파일 없음";
     document.getElementById('news-photo-name').innerText = name;
   }
-  
+  function handleNewsContentPhoto(event) {
+  const name = event.target.files[0]?.name || "선택된 파일 없음";
+  document.getElementById('news-content-photo-name').innerText = name;
+  }
   function handlePhotoUpload(event) {
     const count = event.target.files.length;
     const countSpan = document.getElementById('photo-count');
     if(countSpan) countSpan.innerText = `사진 ${count}장 선택됨`;
   }
-
+ 
   // 9. 소식 삭제 기능
   async function deleteNews(id) {
     if(confirm('정말 삭제하시겠습니까?')) {
