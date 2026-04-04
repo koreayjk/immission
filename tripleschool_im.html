@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Triple School — IM Mission</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy: #042C53; --blue: #185FA5; --blue-light: #E6F1FB;
+  --green: #1D9E75; --green-light: #E1F5EE;
+  --amber: #BA7517; --off-white: #F7F6F2;
+  --text: #1a1a1a; --text-muted: #6b6b6b; --border: rgba(0,0,0,0.08);
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; color: var(--text); background: #fff; overflow-x: hidden; }
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 48px; height: 64px;
+  background: rgba(4,44,83,0.97); backdrop-filter: blur(8px);
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; }
+.nav-logo-mark { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--green); display: flex; align-items: center; justify-content: center; }
+.nav-logo-mark span { font-family: 'Cormorant Garamond', serif; font-size: 14px; font-weight: 600; color: #fff; }
+.nav-logo-text { font-size: 13px; font-weight: 500; letter-spacing: 0.06em; color: #B5D4F4; }
+.nav-links { display: flex; gap: 24px; list-style: none; }
+.nav-links a { font-size: 12px; color: rgba(255,255,255,0.65); text-decoration: none; transition: color 0.2s; }
+.nav-links a:hover { color: #fff; }
+.nav-back { background: transparent; color: rgba(255,255,255,0.7); font-size: 12px; font-weight: 500; padding: 8px 18px; border-radius: 4px; text-decoration: none; transition: all 0.2s; border: 0.5px solid rgba(255,255,255,0.2); }
+.nav-back:hover { background: rgba(255,255,255,0.08); color: #fff; }
+.hero { min-height: 100vh; background: var(--navy); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 120px 24px 100px; position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(255,255,255,0.015) 60px,rgba(255,255,255,0.015) 61px), repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(255,255,255,0.015) 60px,rgba(255,255,255,0.015) 61px); }
+.hero-wave { position: absolute; bottom: 0; left: 0; right: 0; height: 100px; overflow: hidden; }
+.hero-wave svg { width: 100%; height: 100%; }
+.hero-eyebrow { font-size: 11px; font-weight: 500; letter-spacing: 0.18em; color: var(--green); text-transform: uppercase; margin-bottom: 20px; animation: fadeUp 0.8s ease both; }
+.hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(42px,7vw,80px); font-weight: 300; line-height: 1.1; color: #fff; margin-bottom: 24px; animation: fadeUp 0.8s 0.1s ease both; }
+.hero-title em { font-style: italic; color: #85B7EB; }
+.hero-verse { font-size: 14px; font-style: italic; color: rgba(255,255,255,0.5); max-width: 480px; line-height: 1.7; margin-bottom: 40px; animation: fadeUp 0.8s 0.2s ease both; }
+.hero-tags { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 40px; animation: fadeUp 0.8s 0.3s ease both; }
+.hero-tag { font-size: 11px; letter-spacing: 0.08em; padding: 6px 16px; border-radius: 24px; border: 0.5px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.7); }
+.hero-btns { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; animation: fadeUp 0.8s 0.4s ease both; }
+.btn-primary { background: var(--green); color: #fff; font-size: 13px; font-weight: 500; padding: 12px 28px; border-radius: 4px; text-decoration: none; transition: background 0.2s; display: inline-block; }
+.btn-primary:hover { background: #0F6E56; }
+.btn-outline { background: transparent; color: rgba(255,255,255,0.8); font-size: 13px; padding: 12px 28px; border-radius: 4px; text-decoration: none; border: 0.5px solid rgba(255,255,255,0.25); transition: all 0.2s; display: inline-block; }
+.btn-outline:hover { border-color: rgba(255,255,255,0.5); color: #fff; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+section { padding: 88px 48px; }
+.section-inner { max-width: 1080px; margin: 0 auto; }
+.eyebrow { font-size: 11px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--blue); margin-bottom: 10px; }
+.stitle { font-family: 'Cormorant Garamond', serif; font-size: clamp(28px,4vw,44px); font-weight: 300; line-height: 1.2; margin-bottom: 32px; }
+.stitle em { font-style: italic; color: var(--blue); }
+.sdesc { font-size: 15px; color: var(--text-muted); line-height: 1.8; max-width: 640px; margin-bottom: 40px; }
+.dark { background: var(--navy); }
+.dark .eyebrow { color: #5DCAA5; }
+.dark .stitle { color: #fff; }
+.dark .stitle em { color: #85B7EB; }
+.dark .sdesc { color: rgba(255,255,255,0.55); }
+.light { background: var(--off-white); }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+.three-col { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+.pillar { display: flex; gap: 16px; align-items: flex-start; padding: 16px; border-radius: 8px; border: 0.5px solid var(--border); background: var(--off-white); margin-bottom: 10px; transition: border-color 0.2s; }
+.pillar:hover { border-color: var(--blue); }
+.pillar-num { font-size: 11px; font-weight: 500; color: var(--blue); min-width: 72px; padding-top: 2px; }
+.pillar-title { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
+.pillar-desc { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+.stat-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 32px; }
+.stat-box { background: rgba(255,255,255,0.06); border: 0.5px solid rgba(255,255,255,0.12); border-radius: 8px; padding: 22px 16px; text-align: center; }
+.stat-num { font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 300; color: #85B7EB; line-height: 1; }
+.stat-label { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 6px; line-height: 1.5; }
+.glance-wrap { background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 28px; margin: 28px 0; }
+.glance-label { font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 20px; }
+.glance-step { display: grid; grid-template-columns: 160px 1fr 120px; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 0.5px solid rgba(255,255,255,0.06); }
+.glance-step:last-child { border-bottom: none; }
+.gs-step-num { font-size: 9px; letter-spacing: 0.14em; color: rgba(255,255,255,0.3); display: block; margin-bottom: 2px; text-transform: uppercase; }
+.gs-name { font-size: 12px; font-weight: 500; color: #fff; line-height: 1.3; }
+.gs-bar { height: 16px; border-radius: 3px; }
+.gs-school { font-size: 10px; color: rgba(255,255,255,0.35); font-style: italic; }
+.glance-tag-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+.gtag-label { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; min-width: 110px; padding-top: 2px; }
+.gtag-items { font-size: 11px; color: rgba(255,255,255,0.45); line-height: 1.7; }
+.circle-section { display: flex; align-items: center; gap: 56px; flex-wrap: wrap; }
+.circle-quote { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-style: italic; color: #85B7EB; line-height: 1.5; margin-bottom: 14px; display: block; }
+.school-card { padding: 28px 24px; border-radius: 10px; border: 0.5px solid rgba(255,255,255,0.1); transition: all 0.2s; }
+.school-card:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.04); }
+.sc-num { font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 300; line-height: 1; margin-bottom: 14px; }
+.sc-tag { font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 6px; display: block; }
+.sc-name { font-size: 18px; font-weight: 500; color: #fff; margin-bottom: 6px; }
+.sc-aim { font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 20px; font-style: italic; }
+.sc-item { display: flex; gap: 10px; align-items: flex-start; padding-top: 10px; border-top: 0.5px solid rgba(255,255,255,0.07); margin-top: 10px; }
+.si-num { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.3); min-width: 16px; padding-top: 2px; }
+.si-h { font-size: 12px; font-weight: 500; color: #fff; margin-bottom: 2px; }
+.si-p { font-size: 11px; color: rgba(255,255,255,0.45); line-height: 1.6; }
+.path-item { display: grid; grid-template-columns: 72px 1fr; gap: 20px; padding: 28px 0; border-bottom: 0.5px solid rgba(255,255,255,0.08); align-items: start; }
+.path-item:first-child { border-top: 0.5px solid rgba(255,255,255,0.08); }
+.path-n { font-family: 'Cormorant Garamond', serif; font-size: 44px; font-weight: 300; line-height: 1; text-align: center; }
+.path-tag { font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; display: block; margin-bottom: 6px; }
+.path-h { font-size: 16px; font-weight: 500; color: #fff; margin-bottom: 8px; }
+.path-p { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.8; }
+.i-card { background: #fff; border-radius: 10px; padding: 20px 18px; border: 0.5px solid var(--border); transition: border-color 0.2s; }
+.i-card:hover { border-color: var(--blue); }
+.i-tag { font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blue); display: block; margin-bottom: 8px; }
+.i-title { font-size: 14px; font-weight: 500; color: var(--navy); margin-bottom: 6px; }
+.i-desc { font-size: 12px; color: var(--text-muted); line-height: 1.7; }
+.theo-card { background: #fff; border-radius: 10px; padding: 22px 18px; border: 0.5px solid var(--border); transition: border-color 0.2s; }
+.theo-card:hover { border-color: var(--blue); }
+.sola-row { display: grid; grid-template-columns: repeat(5,1fr); gap: 2px; margin-top: 24px; }
+.sola-box { background: var(--navy); padding: 20px 12px; text-align: center; }
+.sola-box:first-child { border-radius: 8px 0 0 8px; }
+.sola-box:last-child { border-radius: 0 8px 8px 0; }
+.sola-lat { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-style: italic; color: #85B7EB; display: block; margin-bottom: 5px; }
+.sola-eng { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.4); }
+.scripture-banner { background: var(--navy); padding: 72px 48px; text-align: center; border-top: 0.5px solid rgba(255,255,255,0.06); border-bottom: 0.5px solid rgba(255,255,255,0.06); }
+.sb-text { font-family: 'Cormorant Garamond', serif; font-size: clamp(20px,3.5vw,34px); font-style: italic; font-weight: 300; color: #fff; line-height: 1.6; max-width: 720px; margin: 0 auto 14px; }
+.sb-ref { font-size: 11px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+footer { background: #021A33; padding: 40px 48px 28px; }
+.footer-inner { max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; padding-bottom: 28px; border-bottom: 0.5px solid rgba(255,255,255,0.08); }
+.footer-col-title { font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 14px; }
+.footer-col p, .footer-col a { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.8; text-decoration: none; display: block; transition: color 0.2s; }
+.footer-col a:hover { color: rgba(255,255,255,0.85); }
+.footer-bottom { max-width: 1080px; margin: 20px auto 0; display: flex; justify-content: space-between; align-items: center; }
+.footer-bottom p { font-size: 11px; color: rgba(255,255,255,0.25); }
+@media(max-width:768px) {
+  nav { padding: 0 20px; } .nav-links { display: none; }
+  section { padding: 64px 20px; }
+  .two-col, .three-col { grid-template-columns: 1fr; }
+  .stat-row { grid-template-columns: 1fr 1fr; }
+  .sola-row { grid-template-columns: 1fr 1fr; }
+  .footer-inner { grid-template-columns: 1fr; gap: 24px; }
+  .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+  .glance-step { grid-template-columns: 130px 1fr; }
+  .circle-section { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="https://koreayjk.github.io/immission/" class="nav-logo">
+    <div class="nav-logo-mark"><span>IM</span></div>
+    <span class="nav-logo-text">International Mission</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#three-schools">Three Schools</a></li>
+    <li><a href="#in-depth">In Depth</a></li>
+    <li><a href="#theology">Theology</a></li>
+    <li><a href="#books">Books</a></li>
+  </ul>
+  <a href="https://koreayjk.github.io/immission/" class="nav-back">← IM Mission</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">IM Mission · Faith Training System · Since 2006</p>
+  <h1 class="hero-title">Triple <em>School</em></h1>
+  <p class="hero-verse">"Educating whole personal, whole life, whole directional Christian" — IM Mission Core DNA</p>
+  <div class="hero-tags">
+    <span class="hero-tag">Gospel School</span>
+    <span class="hero-tag">Disciple School</span>
+    <span class="hero-tag">Calling School</span>
+    <span class="hero-tag">Reformed Theology</span>
+    <span class="hero-tag">Matthew 24:14</span>
+  </div>
+  <div class="hero-btns">
+    <a href="#overview" class="btn-primary">Explore Triple School</a>
+    <a href="https://koreayjk.github.io/immission/#support" class="btn-outline">Partner With Us</a>
+  </div>
+  <div class="hero-wave"><svg viewBox="0 0 1440 100" preserveAspectRatio="none" fill="#ffffff"><path d="M0,50 C360,90 720,10 1080,50 C1260,70 1380,40 1440,50 L1440,100 L0,100 Z"/></svg></div>
+</section>
+
+<!-- ABOUT -->
+<section id="overview">
+  <div class="section-inner">
+    <div class="two-col">
+      <div>
+        <p class="eyebrow">About IM Mission</p>
+        <h2 class="stitle">The Mission Behind <em>Triple School</em></h2>
+        <p style="font-size:15px;color:var(--text-muted);line-height:1.8;margin-bottom:16px;">IM is a missionary organization that aims to accomplish its mission by spreading the gospel to all nations following Matthew 24:14. We regard this vocation as the calling of today's generation — appointing each individual as a missionary.</p>
+        <p style="font-size:15px;color:var(--text-muted);line-height:1.8;margin-bottom:16px;">At the center of all our ministries is <strong>Triple School</strong> — the sincere Christian training system that trains each person as a whole personal, whole life, and all-directional missionary to build the kingdom of God.</p>
+        <p style="font-size:15px;color:var(--text-muted);line-height:1.8;">Triple School aims for Christians to experience God personally and live their lives as whole directional missionaries by <em>knowing</em> God. Not only does it support understanding the Bible correctly, but it also helps each person stand firm as a Christian and missionary throughout their entire life.</p>
+      </div>
+      <div>
+        <div class="pillar"><span class="pillar-num">Core</span><div><p class="pillar-title">Triple School at the Center</p><p class="pillar-desc">The sincere Christian raising system — Gospel School, Disciple School, and Calling School.</p></div></div>
+        <div class="pillar"><span class="pillar-num">Mechanism</span><div><p class="pillar-title">Mentoring · Reading · Self-directed</p><p class="pillar-desc">Reading is a process of obtaining a mentor by encountering the author's thoughts. The Bible is the best mentor — Jesus.</p></div></div>
+        <div class="pillar"><span class="pillar-num">Structure</span><div><p class="pillar-title">3 Schools · 9 Subjects · 4 Levels</p><p class="pillar-desc">From lower elementary to adults — a complete, lifelong curriculum rooted in Reformed theology.</p></div></div>
+        <div class="pillar"><span class="pillar-num">Theology</span><div><p class="pillar-title">Reformed Framework · 5 Sola</p><p class="pillar-desc">All curriculum is arranged within the framework of biblical-theological, systematic, and practical theology.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GLANCE — DARK -->
+<section class="dark" id="glance">
+  <div class="section-inner">
+    <p class="eyebrow">Triple School at a Glance</p>
+    <h2 class="stitle">A <em>Sincere Christian</em> Raising System</h2>
+    <div class="stat-row">
+      <div class="stat-box"><div class="stat-num">3</div><div class="stat-label">Schools<br>Gospel · Disciple · Calling</div></div>
+      <div class="stat-box"><div class="stat-num">9</div><div class="stat-label">Core Subjects<br>across all three schools</div></div>
+      <div class="stat-box"><div class="stat-num">4</div><div class="stat-label">Learning Levels<br>Elementary → Adult</div></div>
+    </div>
+
+    <!-- Glance 1 -->
+    <div class="glance-wrap">
+      <div class="glance-label">Triple School at a Glance 1 — Three Steps of Development</div>
+      <div>
+        <div class="glance-step">
+          <div style="text-align:right;"><span class="gs-step-num">Step 1</span><span class="gs-name">Whole Personality<br>Christian</span></div>
+          <div class="gs-bar" style="background:rgba(133,183,235,0.5);width:70px;"></div>
+          <div class="gs-school">Gospel School</div>
+        </div>
+        <div class="glance-step">
+          <div style="text-align:right;"><span class="gs-step-num">Step 2</span><span class="gs-name">Whole-life<br>Christian</span></div>
+          <div class="gs-bar" style="background:rgba(93,202,165,0.5);width:130px;"></div>
+          <div class="gs-school">Disciple School</div>
+        </div>
+        <div class="glance-step">
+          <div style="text-align:right;"><span class="gs-step-num">Step 3</span><span class="gs-name">All-directional<br>Christian</span></div>
+          <div class="gs-bar" style="background:rgba(240,153,123,0.5);width:190px;"></div>
+          <div class="gs-school">Calling School</div>
+        </div>
+        <div class="glance-step" style="border-bottom:none;">
+          <div style="text-align:right;"><span class="gs-name" style="color:#85B7EB;">The Fullness<br>of Christ</span></div>
+          <div style="flex:1;height:1.5px;background:linear-gradient(to right,rgba(133,183,235,0.4),rgba(240,153,123,0.4));"></div>
+          <div class="gs-school" style="color:#85B7EB;">Ultimate Goal</div>
+        </div>
+      </div>
+      <div style="margin-top:20px;padding-top:20px;border-top:0.5px solid rgba(255,255,255,0.08);">
+        <div class="glance-tag-row"><span class="gtag-label" style="color:#85B7EB;">Gospel School</span><span class="gtag-items">1. Redemptive History Perspective &nbsp;·&nbsp; 2. Kingdom of God Perspective &nbsp;·&nbsp; 3. Covenant Perspective</span></div>
+        <div class="glance-tag-row"><span class="gtag-label" style="color:#5DCAA5;">Disciple School</span><span class="gtag-items">1. Godly Thought &nbsp;·&nbsp; 2. Godly Behavior &nbsp;·&nbsp; 3. Godly Life</span></div>
+        <div class="glance-tag-row"><span class="gtag-label" style="color:#F0997B;">Calling School</span><span class="gtag-items">1. Vision &amp; Vocation &nbsp;·&nbsp; 2. Evangelism &amp; Mission &nbsp;·&nbsp; 3. Church &amp; The End</span></div>
+      </div>
+    </div>
+
+    <!-- Glance 2 Circle -->
+    <div style="margin-top:48px;">
+      <div class="glance-label" style="margin-bottom:20px;">Triple School at a Glance 2 — The Integrated Vision</div>
+      <div class="circle-section">
+        <svg width="280" height="280" viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="140" cy="140" r="125" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
+          <circle cx="140" cy="100" r="18" fill="rgba(255,255,255,0.14)"/>
+          <rect x="124" y="118" width="32" height="48" rx="4" fill="rgba(255,255,255,0.14)"/>
+          <rect x="108" y="123" width="18" height="40" rx="3" fill="rgba(255,255,255,0.1)"/>
+          <rect x="154" y="123" width="18" height="40" rx="3" fill="rgba(255,255,255,0.1)"/>
+          <rect x="124" y="164" width="13" height="34" rx="3" fill="rgba(255,255,255,0.14)"/>
+          <rect x="143" y="164" width="13" height="34" rx="3" fill="rgba(255,255,255,0.14)"/>
+          <rect x="108" y="130" width="64" height="28" rx="3" fill="rgba(133,183,235,0.2)" stroke="rgba(133,183,235,0.35)" stroke-width="0.5"/>
+          <text x="140" y="141" text-anchor="middle" fill="#85B7EB" font-size="8" font-family="DM Sans,sans-serif">Redemptive History</text>
+          <text x="140" y="151" text-anchor="middle" fill="#85B7EB" font-size="8" font-family="DM Sans,sans-serif">Kingdom of God</text>
+          <text x="140" y="161" text-anchor="middle" fill="#85B7EB" font-size="8" font-family="DM Sans,sans-serif">Covenant of God</text>
+          <text x="54" y="34" text-anchor="middle" fill="rgba(240,153,123,0.85)" font-size="12" font-weight="500" font-family="DM Sans,sans-serif">Calling</text>
+          <text x="140" y="58" text-anchor="middle" fill="rgba(93,202,165,0.85)" font-size="12" font-weight="500" font-family="DM Sans,sans-serif">Disciple</text>
+          <text x="140" y="76" text-anchor="middle" fill="rgba(133,183,235,0.85)" font-size="13" font-weight="500" font-family="DM Sans,sans-serif">The Gospel</text>
+          <text x="94" y="92" text-anchor="end" fill="rgba(255,255,255,0.35)" font-size="9" font-family="DM Sans,sans-serif">Godly Thoughts</text>
+          <text x="82" y="160" text-anchor="end" fill="rgba(255,255,255,0.35)" font-size="9" font-family="DM Sans,sans-serif">Godly Behavior</text>
+          <text x="198" y="196" text-anchor="start" fill="rgba(255,255,255,0.35)" font-size="9" font-family="DM Sans,sans-serif">Godly Life</text>
+          <text x="8" y="162" fill="rgba(255,255,255,0.35)" font-size="9" font-family="DM Sans,sans-serif">Vision &amp;</text>
+          <text x="8" y="173" fill="rgba(255,255,255,0.35)" font-size="9" font-family="DM Sans,sans-serif">Vocation</text>
+          <text x="140" y="274" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-size="9" font-family="DM Sans,sans-serif">Evangelism and Mission</text>
+          <text x="256" y="162" text-anchor="end" fill="rgba(255,255,255,0.35)" font-size="9" font-family="DM Sans,sans-serif">Church</text>
+          <text x="262" y="173" text-anchor="end" fill="rgba(255,255,255,0.35)" font-size="9" font-family="DM Sans,sans-serif">&amp; the End</text>
+          <rect x="220" y="22" width="28" height="22" rx="2" fill="rgba(93,202,165,0.18)" stroke="rgba(93,202,165,0.35)" stroke-width="0.5"/>
+          <polygon points="220,22 234,10 248,22" fill="rgba(93,202,165,0.25)"/>
+          <line x1="234" y1="10" x2="234" y2="5" stroke="rgba(93,202,165,0.45)" stroke-width="2"/>
+          <rect x="30" y="42" width="26" height="20" rx="2" fill="rgba(240,153,123,0.18)" stroke="rgba(240,153,123,0.35)" stroke-width="0.5"/>
+          <polygon points="30,42 43,30 56,42" fill="rgba(240,153,123,0.25)"/>
+          <rect x="20" y="204" width="30" height="38" rx="2" fill="rgba(186,117,23,0.18)" stroke="rgba(186,117,23,0.3)" stroke-width="0.5"/>
+          <rect x="25" y="209" width="5" height="5" rx="1" fill="rgba(255,255,255,0.2)"/>
+          <rect x="34" y="209" width="5" height="5" rx="1" fill="rgba(255,255,255,0.2)"/>
+          <rect x="25" y="218" width="5" height="5" rx="1" fill="rgba(255,255,255,0.2)"/>
+          <rect x="34" y="218" width="5" height="5" rx="1" fill="rgba(255,255,255,0.2)"/>
+          <circle cx="226" cy="228" r="20" fill="rgba(24,95,165,0.28)" stroke="rgba(133,183,235,0.25)" stroke-width="0.5"/>
+          <ellipse cx="226" cy="228" rx="10" ry="20" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+          <line x1="206" y1="228" x2="246" y2="228" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+          <defs>
+            <marker id="a1" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="rgba(240,153,123,0.5)"/></marker>
+            <marker id="a2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="rgba(93,202,165,0.5)"/></marker>
+          </defs>
+          <line x1="62" y1="48" x2="122" y2="116" stroke="rgba(240,153,123,0.35)" stroke-width="1.2" marker-end="url(#a1)"/>
+          <line x1="140" y1="66" x2="140" y2="116" stroke="rgba(93,202,165,0.35)" stroke-width="1.2" marker-end="url(#a2)"/>
+        </svg>
+        <div style="max-width:300px;">
+          <span class="circle-quote">"Educating whole personal, whole life, whole directional Christian"</span>
+          <p style="font-size:14px;color:rgba(255,255,255,0.55);line-height:1.8;margin-bottom:12px;">The Gospel is at the center. Disciple School shapes values. Calling School expands influence into every sphere of life — family, work, community, and the nations.</p>
+          <p style="font-size:14px;color:rgba(255,255,255,0.55);line-height:1.8;">For the person who established their Christian perspective through the gospel, their whole personality — intellect, emotion, and volition — develops appropriately. Their life is devoted to the mission.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOUNDATION — LIGHT -->
+<section class="light" id="foundation">
+  <div class="section-inner">
+    <p class="eyebrow">Understanding Triple School</p>
+    <h2 class="stitle">The Foundation:<br><em>Gospel School</em> Perspective</h2>
+    <div class="two-col">
+      <div>
+        <p style="font-size:15px;color:var(--text-muted);line-height:1.8;margin-bottom:16px;">Humans consist of a body, spirit, and soul — distinguished yet united as holistic beings. A faithful Christian does not separate body and spirit with dualistic thought, developing them in God's way. Triple School's foundation comes from 2 Timothy 3:15–17: to be made wise unto salvation, to be whole as the man of God, and to accomplish God's work.</p>
+        <p style="font-size:15px;color:var(--text-muted);line-height:1.8;margin-bottom:20px;">The Bible declares that God has created the world. History is not a coincidence nor circulation — the Christian view of history is <strong>linear</strong>, with the beginning and the end times.</p>
+        <div style="background:#fff;border-radius:10px;padding:22px;border:0.5px solid var(--border);">
+          <p style="font-size:10px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--blue);margin-bottom:14px;">Christianity vs. Other Religions</p>
+          <svg width="100%" height="140" viewBox="0 0 320 140" xmlns="http://www.w3.org/2000/svg">
+            <line x1="70" y1="130" x2="196" y2="20" stroke="#185FA5" stroke-width="3.5"/>
+            <polygon points="196,20 184,32 206,31" fill="#185FA5"/>
+            <text x="204" y="18" fill="#185FA5" font-size="11" font-weight="500" font-family="DM Sans,sans-serif">Christianity</text>
+            <text x="204" y="36" fill="#6b6b6b" font-size="10" font-family="DM Sans,sans-serif">Grow up in Salvation</text>
+            <line x1="250" y1="128" x2="128" y2="76" stroke="#bbb" stroke-width="2"/>
+            <polygon points="128,76 142,70 136,83" fill="#bbb"/>
+            <text x="252" y="132" fill="#aaa" font-size="10" font-family="DM Sans,sans-serif">Other Religions</text>
+            <g transform="rotate(-37,155,82)">
+              <rect x="115" y="74" width="80" height="18" rx="3" fill="#042C53"/>
+              <text x="155" y="87" text-anchor="middle" fill="white" font-size="10" font-weight="500" font-family="DM Sans,sans-serif">SALVATION</text>
+            </g>
+          </svg>
+          <p style="font-size:12px;color:var(--text-muted);line-height:1.6;margin-top:8px;">All other religions run <em>towards</em> salvation. Christianity is different — from salvation <em>starts</em> the life of faith. Every Christian should grow from their salvation, based on redemption.</p>
+        </div>
+      </div>
+      <div>
+        <div style="background:#fff;border-radius:10px;padding:22px;border:0.5px solid var(--border);margin-bottom:16px;">
+          <p style="font-size:10px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--blue);margin-bottom:16px;">The Linear View of Redemptive History</p>
+          <div style="margin-bottom:18px;">
+            <p style="font-size:10px;color:var(--text-muted);text-align:center;margin-bottom:8px;">The Christian view — linear, with beginning and end</p>
+            <div style="display:flex;align-items:center;"><div style="width:10px;height:10px;border-radius:50%;background:var(--navy);flex-shrink:0;"></div><div style="flex:1;height:1.5px;background:var(--navy);"></div><div style="width:10px;height:10px;border-radius:50%;background:var(--navy);flex-shrink:0;"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px;font-weight:500;color:var(--navy);margin-top:4px;"><span>Creation</span><span>Judgment</span></div>
+          </div>
+          <div style="margin-bottom:18px;">
+            <p style="font-size:10px;color:var(--text-muted);text-align:center;margin-bottom:8px;">God's Covenant Accomplished in Christ</p>
+            <div style="display:flex;align-items:center;position:relative;">
+              <div style="width:10px;height:10px;border-radius:50%;background:var(--navy);flex-shrink:0;"></div>
+              <div style="flex:0.28;height:1.5px;background:var(--navy);position:relative;"><div style="position:absolute;top:-7px;left:25%;width:1px;height:14px;background:rgba(0,0,0,0.18);"></div><div style="position:absolute;top:-7px;left:58%;width:1px;height:14px;background:rgba(0,0,0,0.18);"></div></div>
+              <div style="font-size:18px;color:var(--navy);margin:0 -1px;line-height:1;">✝</div>
+              <div style="flex:0.5;height:1.5px;background:var(--navy);"></div>
+              <div style="width:10px;height:10px;border-radius:50%;background:var(--navy);flex-shrink:0;"></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;font-size:9px;color:var(--text-muted);margin-top:4px;gap:4px;">
+              <div><strong style="color:var(--navy);font-size:10px;">Creation</strong><br>Original Kingdom</div>
+              <div style="text-align:center;color:var(--blue);"><strong>The Accomplishment<br>of God's Promise</strong></div>
+              <div style="text-align:right;"><strong style="color:var(--navy);font-size:10px;">Judgment</strong><br>Completion</div>
+            </div>
+          </div>
+          <div>
+            <p style="font-size:10px;color:var(--text-muted);text-align:center;margin-bottom:8px;">Christians in the End Times — We Are Here</p>
+            <div style="display:flex;align-items:center;position:relative;">
+              <div style="width:10px;height:10px;border-radius:50%;background:var(--navy);flex-shrink:0;"></div>
+              <div style="flex:0.3;height:1.5px;background:var(--navy);position:relative;"><div style="position:absolute;top:-7px;left:22%;width:1px;height:14px;background:rgba(0,0,0,0.18);"></div><div style="position:absolute;top:-7px;left:55%;width:1px;height:14px;background:rgba(0,0,0,0.18);"></div></div>
+              <div style="font-size:18px;color:var(--navy);margin:0 -1px;line-height:1;">✝</div>
+              <div style="flex:0.36;height:1.5px;background:var(--navy);position:relative;"><div style="position:absolute;top:-22px;right:14px;text-align:center;"><div style="width:8px;height:8px;border-radius:50%;background:var(--blue);margin:0 auto;"></div><div style="width:10px;height:14px;background:var(--blue);border-radius:2px;margin:1px auto;"></div></div></div>
+              <div style="flex:0.1;height:1.5px;background:var(--navy);"></div>
+              <div style="width:10px;height:10px;border-radius:50%;background:var(--navy);flex-shrink:0;"></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;font-size:9px;color:var(--text-muted);margin-top:4px;">
+              <div><strong style="color:var(--navy);">Creation</strong></div>
+              <div style="text-align:center;color:var(--blue);"><strong>Christ's<br>Coming</strong></div>
+              <div style="text-align:center;color:var(--blue);font-weight:600;">← We Are<br>Here</div>
+              <div style="text-align:right;"><strong style="color:var(--navy);">Judgment</strong></div>
+            </div>
+          </div>
+        </div>
+        <p style="font-size:13px;color:var(--text-muted);line-height:1.8;">For Christians living in the end times, development must be: a <strong>whole personal Christian</strong> with a Christian worldview, a <strong>whole-life Christian</strong> pursuing holiness, and a <strong>whole directional Christian</strong> who participates in accomplishing the kingdom.</p>
+        <div style="background:#fff;border-left:3px solid var(--blue);padding:14px 18px;border-radius:0 6px 6px 0;margin-top:16px;">
+          <p style="font-size:13px;font-style:italic;color:var(--text-muted);line-height:1.7;">Development of a Christian is accomplished when they obtain wisdom unto salvation, live a whole life as a man of God, and participate in God's work. — 2 Timothy 3:15–17</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THREE SCHOOLS — DARK -->
+<section class="dark" id="three-schools">
+  <div class="section-inner">
+    <p class="eyebrow">The Curriculum</p>
+    <h2 class="stitle">Three Schools, <em>One Journey</em></h2>
+    <p class="sdesc">Each school builds on the previous — forming a Christian perspective, building Christian values, and developing Christian influence across all of life.</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+      <div class="school-card">
+        <div class="sc-num" style="color:rgba(133,183,235,0.25);">01</div>
+        <span class="sc-tag" style="color:#85B7EB;">Gospel School</span>
+        <div class="sc-name">Gospel School</div>
+        <div class="sc-aim">Forming a Christian Perspective</div>
+        <div class="sc-item"><span class="si-num">01</span><div><div class="si-h">Redemptive History Perspective</div><div class="si-p">God, the creator and ruler, leads the history of salvation through His Son Jesus Christ until the day of judgment.</div></div></div>
+        <div class="sc-item"><span class="si-num">02</span><div><div class="si-h">Kingdom of God Perspective</div><div class="si-p">The purpose of God leading salvation history is to be glorified by revealing His eternal kingdom.</div></div></div>
+        <div class="sc-item"><span class="si-num">03</span><div><div class="si-h">Covenant Perspective</div><div class="si-p">The means of God leading salvation history: His covenant — His promise, never changing, never failing.</div></div></div>
+      </div>
+      <div class="school-card">
+        <div class="sc-num" style="color:rgba(93,202,165,0.25);">02</div>
+        <span class="sc-tag" style="color:#5DCAA5;">Disciple School</span>
+        <div class="sc-name">Disciple School</div>
+        <div class="sc-aim">Building Christian Values</div>
+        <div class="sc-item"><span class="si-num">01</span><div><div class="si-h">Godly Thought</div><div class="si-p">Study and think deeply about biblical truth, doctrine, and the practice of Christianity as the foundation.</div></div></div>
+        <div class="sc-item"><span class="si-num">02</span><div><div class="si-h">Godly Behavior</div><div class="si-p">From godly thought comes obedience — training and habituating godly action in everyday life.</div></div></div>
+        <div class="sc-item"><span class="si-num">03</span><div><div class="si-h">Godly Life</div><div class="si-p">The one with godly habits practices godliness throughout their whole life, setting an example to all around them.</div></div></div>
+      </div>
+      <div class="school-card">
+        <div class="sc-num" style="color:rgba(240,153,123,0.25);">03</div>
+        <span class="sc-tag" style="color:#F0997B;">Calling School</span>
+        <div class="sc-name">Calling School</div>
+        <div class="sc-aim">Developing Christian Influence</div>
+        <div class="sc-item"><span class="si-num">01</span><div><div class="si-h">Vision and Vocation</div><div class="si-p">The vision is the accomplishment of God's kingdom; the vocation is to perform that vision through a specific life calling.</div></div></div>
+        <div class="sc-item"><span class="si-num">02</span><div><div class="si-h">Evangelism and Mission</div><div class="si-p">Works for God's kingdom to come wherever one stands — family, work, community, and the mission field.</div></div></div>
+        <div class="sc-item"><span class="si-num">03</span><div><div class="si-h">Church and The End Times</div><div class="si-p">Builds church community as the body of Christ, living as the bride of Christ awaiting His return.</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- IN DEPTH — LIGHT / DARK alternating -->
+<section class="light" id="in-depth">
+  <div class="section-inner">
+    <p class="eyebrow">Gospel School — In Depth</p>
+    <h2 class="stitle">Christian <em>Perspective</em></h2>
+    <div class="two-col">
+      <div>
+        <p style="font-size:15px;color:var(--text-muted);line-height:1.8;margin-bottom:16px;">Knowledge about God is the foundation and core of Christian development. The gospel must be understood in depth — not merely as the fact that Jesus died 2000 years ago, but as God's entire dispensation of salvation, its purpose, and method.</p>
+        <p style="font-size:15px;color:var(--text-muted);line-height:1.8;margin-bottom:16px;">For the Christian, their worldview must change. Change in perspective of seeing the world and yourself achieves the development of intellect, emotion, and will of one's character.</p>
+        <div style="background:#fff;border-left:3px solid var(--blue);padding:14px 18px;border-radius:0 6px 6px 0;margin:20px 0;">
+          <p style="font-size:13px;font-style:italic;color:var(--text-muted);line-height:1.7;">One who 'knows' what is right or wrong 'loves and pursues' that which is right and 'applies and practices' it. You need to know the history of salvation, its purpose, and God's method. This worldview helps an individual develop whole personally.</p>
+        </div>
+        <div class="three-col">
+          <div class="i-card"><span class="i-tag">Perspective 1</span><div class="i-title">Redemptive History</div><div class="i-desc">God, the creator, saves His people through Jesus until judgment.</div></div>
+          <div class="i-card"><span class="i-tag">Perspective 2</span><div class="i-title">Kingdom of God</div><div class="i-desc">The purpose: God glorified through His eternal kingdom.</div></div>
+          <div class="i-card"><span class="i-tag">Perspective 3</span><div class="i-title">Covenant</div><div class="i-desc">God's method: His promise, kept forever, never failing.</div></div>
+        </div>
+      </div>
+      <div>
+        <div style="background:#fff;border-radius:10px;padding:22px;border:0.5px solid var(--border);">
+          <p style="font-size:10px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--blue);margin-bottom:14px;">The Kingdom of God Through History</p>
+          <div style="overflow-x:auto;">
+            <table style="width:100%;border-collapse:collapse;font-size:11px;min-width:360px;">
+              <tr><td colspan="7" style="background:var(--navy);color:rgba(255,255,255,0.4);padding:7px 10px;font-size:9px;letter-spacing:0.14em;font-weight:500;text-transform:uppercase;border-radius:4px 4px 0 0;">THE KINGDOM OF GOD ————————→</td></tr>
+              <tr style="background:var(--off-white);">
+                <td style="padding:7px 8px;font-size:10px;font-weight:500;border:0.5px solid var(--border);">Redemptive History</td>
+                <td style="padding:6px 7px;font-size:10px;text-align:center;border:0.5px solid var(--border);">Entire Mankind</td>
+                <td style="padding:6px 7px;font-size:10px;text-align:center;border:0.5px solid var(--border);">Israel</td>
+                <td style="padding:6px 7px;font-size:10px;text-align:center;border:0.5px solid var(--border);">Tribe of Judah</td>
+                <td style="padding:6px 7px;font-size:10px;text-align:center;border:0.5px solid var(--border);">Remnant</td>
+                <td style="padding:6px 7px;font-size:10px;text-align:center;border:0.5px solid var(--border);">Early Church</td>
+                <td style="padding:6px 7px;font-size:10px;text-align:center;border:0.5px solid var(--border);">All Nations</td>
+              </tr>
+              <tr>
+                <td style="padding:7px 8px;font-size:10px;font-weight:500;border:0.5px solid var(--border);">Covenant</td>
+                <td colspan="2" style="padding:7px 8px;font-size:10px;text-align:center;border:0.5px solid var(--border);background:rgba(24,95,165,0.05);"><strong>Genesis 1–2</strong><br>Eden, Creation</td>
+                <td colspan="2" style="padding:7px 8px;font-size:10px;text-align:center;border:0.5px solid var(--border);color:var(--blue);font-weight:500;">✝ Christ's Coming<br>(God's kingdom come)</td>
+                <td colspan="2" style="padding:7px 8px;font-size:10px;text-align:center;border:0.5px solid var(--border);background:rgba(24,95,165,0.05);"><strong>Rev. 21–22</strong><br>New Heaven &amp; Earth</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <p style="font-size:13px;color:var(--text-muted);line-height:1.8;margin-top:16px;">The purpose of the Gospel School: to educate a whole personality Christian by setting a Christian perspective — knowing redemptive history, the Kingdom of God, and the covenant.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="dark">
+  <div class="section-inner">
+    <p class="eyebrow">Disciple School — In Depth</p>
+    <h2 class="stitle">Christian <em>Values</em></h2>
+    <div class="two-col">
+      <div>
+        <p style="font-size:15px;color:rgba(255,255,255,0.55);line-height:1.8;margin-bottom:16px;">A person who forms an evangelical worldview decides their attitude, values, and principle. The most significant value for such a person is <strong style="color:#fff;">piety</strong> — resembling God, following and resembling Jesus Christ, the very nature and image of God.</p>
+        <p style="font-size:15px;color:rgba(255,255,255,0.55);line-height:1.8;margin-bottom:16px;">Disciples are 'sanctified people who dwell in the world but not of the world' (John 17:16–17). There needs constant effort to resemble Jesus. Godliness must hate what God hates and do what God loves.</p>
+        <div style="background:rgba(133,183,235,0.08);border-left:2px solid #85B7EB;padding:14px 18px;border-radius:0 6px 6px 0;margin:20px 0;">
+          <p style="font-size:13px;font-style:italic;color:rgba(255,255,255,0.6);line-height:1.7;">Romans 12:2 — "Do not conform any longer to the pattern of this world, but be transformed by the renewing of your mind." That is godly thought. Living a Jesus-loving life — that is godly life.</p>
+        </div>
+        <p style="font-size:14px;color:rgba(255,255,255,0.5);line-height:1.8;">The life of a disciple certainly appears as outer change. When the gospel transforms our inner side, our outer side also changes — as people whose inner side has changed willingly follow the command of Christ.</p>
+      </div>
+      <div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;">
+          <div style="background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.1);border-radius:8px;padding:18px 14px;border-top:2px solid #85B7EB;"><div style="font-size:9px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#85B7EB;margin-bottom:7px;">Values 1</div><div style="font-size:13px;font-weight:500;color:#fff;margin-bottom:5px;">Godly Thought</div><div style="font-size:11px;color:rgba(255,255,255,0.45);line-height:1.6;">Study and think deeply about biblical truths, doctrines, and the practice of Christianity.</div></div>
+          <div style="background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.1);border-radius:8px;padding:18px 14px;border-top:2px solid #5DCAA5;"><div style="font-size:9px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#5DCAA5;margin-bottom:7px;">Values 2</div><div style="font-size:13px;font-weight:500;color:#fff;margin-bottom:5px;">Godly Behavior</div><div style="font-size:11px;color:rgba(255,255,255,0.45);line-height:1.6;">Obey the truth in the Bible. Train and habituate godly action.</div></div>
+          <div style="background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.1);border-radius:8px;padding:18px 14px;border-top:2px solid #F0997B;"><div style="font-size:9px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#F0997B;margin-bottom:7px;">Values 3</div><div style="font-size:13px;font-weight:500;color:#fff;margin-bottom:5px;">Godly Life</div><div style="font-size:11px;color:rgba(255,255,255,0.45);line-height:1.6;">Practice godliness throughout the whole life; set an example to people around you.</div></div>
+        </div>
+        <div style="background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.08);border-radius:8px;padding:18px;">
+          <div style="font-size:10px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:14px;">The Flow of Godliness</div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="flex:1;text-align:center;background:rgba(133,183,235,0.1);border:0.5px solid rgba(133,183,235,0.2);border-radius:6px;padding:12px 8px;"><div style="font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:#85B7EB;margin-bottom:4px;">Thought</div><div style="font-size:11px;color:rgba(255,255,255,0.55);">Know Truth</div></div>
+            <div style="color:rgba(255,255,255,0.3);font-size:16px;">→</div>
+            <div style="flex:1;text-align:center;background:rgba(93,202,165,0.1);border:0.5px solid rgba(93,202,165,0.2);border-radius:6px;padding:12px 8px;"><div style="font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:#5DCAA5;margin-bottom:4px;">Behavior</div><div style="font-size:11px;color:rgba(255,255,255,0.55);">Obey Truth</div></div>
+            <div style="color:rgba(255,255,255,0.3);font-size:16px;">→</div>
+            <div style="flex:1;text-align:center;background:rgba(240,153,123,0.1);border:0.5px solid rgba(240,153,123,0.2);border-radius:6px;padding:12px 8px;"><div style="font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:#F0997B;margin-bottom:4px;">Life</div><div style="font-size:11px;color:rgba(255,255,255,0.55);">Live Truth</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="light" id="calling-detail">
+  <div class="section-inner">
+    <p class="eyebrow">Calling School — In Depth</p>
+    <h2 class="stitle">Christian <em>Influence</em></h2>
+    <div class="two-col">
+      <div>
+        <p style="font-size:15px;color:var(--text-muted);line-height:1.8;margin-bottom:16px;">Salvation is essentially calling. It is a calling which God calls worldly people through His grace — washing them, making them His children, and having them as part of God's kingdom.</p>
+        <p style="font-size:15px;color:var(--text-muted);line-height:1.8;margin-bottom:16px;">The influence is not about being in a high position nor wealth — it is about influencing all directions of the community and society where one belongs. Christians with vocations must have righteous and good influence as parents or children in family, as a boss or employee at work, as a member of society and country.</p>
+        <div style="background:#fff;border-left:3px solid var(--blue);padding:14px 18px;border-radius:0 6px 6px 0;margin:20px 0;">
+          <p style="font-size:13px;font-style:italic;color:var(--text-muted);line-height:1.7;">Ephesians 1:10 — "To bring unity to all things in heaven and on earth under Christ." The Calling School trains Christians to live toward that day, in every sphere of life.</p>
+        </div>
+      </div>
+      <div>
+        <div style="background:#fff;border-radius:10px;padding:22px;border:0.5px solid var(--border);margin-bottom:16px;">
+          <p style="font-size:10px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--blue);margin-bottom:14px;">Purpose: Educating All-Directional Christians</p>
+          <div style="background:var(--navy);padding:12px 16px;border-radius:6px 6px 0 0;text-align:center;font-size:13px;font-weight:500;color:#fff;">Developing Influence in Every Sphere</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);">
+            <div style="background:#fff;padding:14px 10px;text-align:center;"><div style="font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--blue);margin-bottom:5px;">Influence 1</div><div style="font-size:12px;font-weight:500;color:var(--navy);margin-bottom:4px;">Vision &amp; Vocation</div><div style="font-size:10px;color:var(--text-muted);line-height:1.5;">God's kingdom as vision; vocation as specific means</div></div>
+            <div style="background:#fff;padding:14px 10px;text-align:center;"><div style="font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--green);margin-bottom:5px;">Influence 2</div><div style="font-size:12px;font-weight:500;color:var(--navy);margin-bottom:4px;">Evangelism &amp; Mission</div><div style="font-size:10px;color:var(--text-muted);line-height:1.5;">Working for God's kingdom wherever one stands</div></div>
+            <div style="background:#fff;padding:14px 10px;text-align:center;"><div style="font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--amber);margin-bottom:5px;">Influence 3</div><div style="font-size:12px;font-weight:500;color:var(--navy);margin-bottom:4px;">Church &amp; The End</div><div style="font-size:10px;color:var(--text-muted);line-height:1.5;">Building church as body of Christ; bride awaiting return</div></div>
+          </div>
+        </div>
+        <div class="three-col">
+          <div class="i-card"><span class="i-tag">Influence 1</span><div class="i-title">Vision &amp; Vocation</div><div class="i-desc">The accomplishment of God's kingdom as vision; the vocation is the specific means in actual life — the calling of the generation.</div></div>
+          <div class="i-card"><span class="i-tag">Influence 2</span><div class="i-title">Evangelism &amp; Mission</div><div class="i-desc">Works hard wherever one stands — family, work, community, and the mission field — for God's kingdom to come.</div></div>
+          <div class="i-card"><span class="i-tag">Influence 3</span><div class="i-title">Church &amp; The End</div><div class="i-desc">Builds church community; lives the end times as the bride of Christ awaiting His second coming.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OUTCOME — DARK -->
+<section class="dark" id="outcome">
+  <div class="section-inner">
+    <p class="eyebrow">The Outcome</p>
+    <h2 class="stitle">Who Triple School <em>Raises Up</em></h2>
+    <p class="sdesc">Three schools. Three outcomes. One goal — the fullness of Christ.</p>
+    <div style="max-width:800px;">
+      <div class="path-item">
+        <div class="path-n" style="color:rgba(133,183,235,0.25);">01</div>
+        <div><span class="path-tag" style="color:#85B7EB;">Gospel School · Outcome</span><div class="path-h">Whole Personal Christian</div><div class="path-p">A believer who has formed a biblical Christian worldview through the Gospel. Their intellect, emotion, and will develop appropriately. Their job becomes a means of spreading the gospel, their family a co-worker, their church a community of the gospel.</div></div>
+      </div>
+      <div class="path-item">
+        <div class="path-n" style="color:rgba(93,202,165,0.25);">02</div>
+        <div><span class="path-tag" style="color:#5DCAA5;">Disciple School · Outcome</span><div class="path-h">Whole Life Christian</div><div class="path-p">A believer who pursues holy life as a person of God's kingdom. Godly thought transforms into godly behavior and ultimately into a godly life — not separate from the world, but sanctified within it, resembling Jesus in all things.</div></div>
+      </div>
+      <div class="path-item">
+        <div class="path-n" style="color:rgba(240,153,123,0.25);">03</div>
+        <div><span class="path-tag" style="color:#F0997B;">Calling School · Outcome</span><div class="path-h">All-Directional Christian</div><div class="path-p">A believer who participates in accomplishing the Kingdom of God in every sphere of life — family, work, society, and the nations. Evangelism and mission appear from the eagerness of longing for God's kingdom to come wherever they stand.</div></div>
+      </div>
+      <div class="path-item" style="border-bottom:none;">
+        <div class="path-n" style="color:rgba(133,183,235,0.2);font-size:32px;padding-top:8px;">✦</div>
+        <div><span class="path-tag" style="color:#85B7EB;">The Ultimate Goal</span><div class="path-h">The Fullness of Christ</div><div class="path-p">Triple School aims for every believer to grow into the fullness of Christ — trained by the Gospel, shaped by His values, and sent out as a whole directional missionary to build the Kingdom of God until He comes again. (Ephesians 1:10)</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCRIPTURE -->
+<div class="scripture-banner">
+  <p class="sb-text">"And this gospel of the kingdom will be preached in the whole world as a testimony to all nations, and then the end will come."</p>
+  <div class="sb-ref">Matthew 24:14</div>
+</div>
+
+<!-- THEOLOGY — LIGHT -->
+<section class="light" id="theology">
+  <div class="section-inner">
+    <p class="eyebrow">Theological Meaning</p>
+    <h2 class="stitle">Rooted in <em>Reformed Theology</em></h2>
+    <p class="sdesc">Triple School is in the same context as the entire Bible — the gospel, discipleship, and calling are three great streams of the Bible that Triple School retains. The Bible aims for the great day in Ephesians 1:10.</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:40px;">
+      <div class="theo-card"><span style="font-size:10px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--blue);display:block;margin-bottom:8px;">Gospel School</span><div style="font-size:14px;font-weight:500;color:var(--navy);margin-bottom:8px;">Biblical Theology</div><div style="font-size:12px;color:var(--text-muted);line-height:1.7;">Forms a Christian worldview through the historical revelation of the Bible — the history of salvation, of God's kingdom, and of the covenant. God expressed His heart through 66 books of the Bible.</div></div>
+      <div class="theo-card"><span style="font-size:10px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--blue);display:block;margin-bottom:8px;">Disciple School</span><div style="font-size:14px;font-weight:500;color:var(--navy);margin-bottom:8px;">Systematic Theology</div><div style="font-size:12px;color:var(--text-muted);line-height:1.7;">Firm doctrinal truth becomes the values of Christ to encourage godly life. Godliness is about knowing God — practiced by loving God. You long for holiness when you know His holiness.</div></div>
+      <div class="theo-card"><span style="font-size:10px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--blue);display:block;margin-bottom:8px;">Calling School</span><div style="font-size:14px;font-weight:500;color:var(--navy);margin-bottom:8px;">Historical &amp; Practical Theology</div><div style="font-size:12px;color:var(--text-muted);line-height:1.7;">Considers how to accomplish the vocation of mission today as a church living between the first and second coming, reflecting on how God led the history of mission through the church.</div></div>
+    </div>
+    <h3 style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;margin-bottom:12px;">The Reformist Meaning — <em style="font-style:italic;color:var(--blue);">5 Sola</em></h3>
+    <p style="font-size:15px;color:var(--text-muted);line-height:1.8;max-width:640px;margin-bottom:8px;">Triple School is seen through the 5 Sola — the core values of the Reformation. The purpose of Triple School is to recover: by grace alone, in Christ alone, the gospel of by faith alone, the godly life of disciples, and the vocation of God's kingdom.</p>
+    <p style="font-size:15px;color:var(--text-muted);line-height:1.8;max-width:640px;margin-bottom:24px;">This generation needs reformation. In the place of truth, human will and reason. In the place where God is master, self-realization. Triple School exists to recover the essence of faith for today's generation.</p>
+    <div class="sola-row">
+      <div class="sola-box"><span class="sola-lat">Sola Scriptura</span><span class="sola-eng">By Scripture Alone</span></div>
+      <div class="sola-box"><span class="sola-lat">Sola Gratia</span><span class="sola-eng">By Grace Alone</span></div>
+      <div class="sola-box"><span class="sola-lat">Solus Christus</span><span class="sola-eng">In Christ Alone</span></div>
+      <div class="sola-box"><span class="sola-lat">Sola Fide</span><span class="sola-eng">By Faith Alone</span></div>
+      <div class="sola-box"><span class="sola-lat">Soli Deo Gloria</span><span class="sola-eng">Glory to God Alone</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- BOOKS — DARK -->
+<section class="dark" id="books">
+  <div class="section-inner">
+    <p class="eyebrow">Curriculum Books</p>
+    <h2 class="stitle">What We <em>Study Together</em></h2>
+    <p class="sdesc">Books are arranged by school and by four levels: Step 1 (Lower Elementary), Step 2 (Upper Elementary), Step 3 (Middle Grades), Step 4 (High School / Adults).</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+      <div style="background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.1);border-radius:10px;padding:24px 20px;">
+        <span style="font-size:10px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:#85B7EB;display:block;margin-bottom:10px;padding-bottom:10px;border-bottom:0.5px solid rgba(255,255,255,0.08);">Gospel School</span>
+        <div style="font-size:14px;font-weight:500;color:#fff;margin-bottom:16px;">Forming a Christian Worldview</div>
+        <div style="display:flex;flex-direction:column;gap:0;">
+          <div style="font-size:12px;color:rgba(255,255,255,0.45);padding:6px 0;border-bottom:0.5px solid rgba(255,255,255,0.06);display:flex;gap:8px;"><span style="color:#85B7EB;opacity:.4;flex-shrink:0;">—</span>14 Days of The Old Testament Journey</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.45);padding:6px 0;border-bottom:0.5px solid rgba(255,255,255,0.06);display:flex;gap:8px;"><span style="color:#85B7EB;opacity:.4;flex-shrink:0;">—</span>The Gospel As Center</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.45);padding:6px 0;border-bottom:0.5px solid rgba(255,255,255,0.06);display:flex;gap:8px;"><span style="color:#85B7EB;opacity:.4;flex-shrink:0;">—</span>Saved From What?</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.45);padding:6px 0;border-bottom:0.5px solid rgba(255,255,255,0.06);display:flex;gap:8px;"><span style="color:#85B7EB;opacity:.4;flex-shrink:0;">—</span>Jesus On Every Page</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.45);padding:6px 0;border-bottom:0.5px solid rgba(255,255,255,0.06);display:flex;gap:8px;"><span style="color:#85B7EB;opacity:.4;flex-shrink:0;">—</span>The Story of The Kingdom of God</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.45);padding:6px 0;border-bottom:0.5px solid rgba(255,255,255,0.06);display:flex;gap:8px;"><span style="color:#85B7EB;opacity:.4;flex-shrink:0;">—</span>Gospel and Kingdom</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.45);padding:6px 0;border-bottom:0.5px solid rgba(255,255,255,0.06);display:flex;gap:8px;"><span style="color:#85B7EB;opacity:.4;flex-shrink:0;">—</span>The Promises of God</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.45);padding:6px 0;display:flex;gap:8px;"><span style="color:#85B7EB;opacity:.4;flex-shrink:0;">—</span>Can I Be Sure I'm Saved?</div>
+        </div>
+        <div style="margin-top:12px;font-size:11px;color:#85B7EB;opacity:.55;">+ More titles across all 4 levels</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.1);border-radius:10px;padding:24px 20px;">
+        <span style="font-size:10px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:#5DCAA5;display:block;margin-bottom:10px;padding-bottom:10px;border-bottom:0.5px solid rgba(255,255,255,0.08);">Disciple School</span>
+        <div style="font-size:14px;font-weight:500;color:#fff;margin-bottom:16px;">Building Godly Values</div>
+        <div style="display:flex;flex-direction:column;gap:0;">
+          <div style="font-size:12px;color:rgba(255,255,255,0.45);padding:6px 0;border-bottom:0.5px solid rgba(255,255,255,0.06);display:flex;gap:8px;"><span style="color:#5DCAA5;opacity:.4;flex-shrink:0;">—</span>Essential Truths of the Christian Faith</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.45);padding:6px 0;border-bottom:0.5px solid rgba(255,255,255,0.06);display:flex;gap:8px;"><span style="color:#5DCAA5;opacity:.4;flex-shrink:0;">—</span>Seeing Christ In The Tabernacle</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.45);padding:6px 0;border-bottom:0.5px solid rgba(255,255,255,0.06);display:flex;gap:8px;"><span style="color:#5DCAA5;opacity:.4;flex-shrink:0;">—</span>The Holy Spirit</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.45);padding:6px 0;border-bottom:0.5px solid rgba(255,255,255,0.06);display:flex;gap:8px;"><span style="color:#5DCAA5;opacity:.4;flex-shrink:0;">—</span>The Practice of Piety</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.45);padding:6px 0;border-bottom:0.5px solid rgba(255,255,255,0.06);display:flex;gap:8px;"><span style="color:#5DCAA5;opacity:.4;flex-shrink:0;">—</span>The Freedom of Self-Forgetfulness</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.45);padding:6px 0;border-bottom:0.5px solid rgba(255,255,255,0.06);display:flex;gap:8px;"><span style="color:#5DCAA5;opacity:.4;flex-shrink:0;">—</span>Stop Trying To Live For Jesus</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.45);padding:6px 0;border-bottom:0.5px solid rgba(255,255,255,0.06);display:flex;gap:8px;"><span style="color:#5DCAA5;opacity:.4;flex-shrink:0;">—</span>The Pilgrim's Progress Explained</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.45);padding:6px 0;display:flex;gap:8px;"><span style="color:#5DCAA5;opacity:.4;flex-shrink:0;">—</span>The Life and Diary of David Brainerd</div>
+        </div>
+        <div style="margin-top:12px;font-size:11px;color:#5DCAA5;opacity:.55;">+ More titles across all 4 levels</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.1);border-radius:10px;padding:24px 20px;">
+        <span style="font-size:10px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:#F0997B;display:block;margin-bottom:10px;padding-bottom:10px;border-bottom:0.5px solid rgba(255,255,255,0.08);">Calling School</span>
+        <div style="font-size:14px;font-weight:500;color:#fff;margin-bottom:16px;">Developing Kingdom Influence</div>
+        <div style="display:flex;flex-direction:column;gap:0;">
+          <div style="font-size:12px;color:rgba(255,255,255,0.45);padding:6px 0;border-bottom:0.5px solid rgba(255,255,255,0.06);display:flex;gap:8px;"><span style="color:#F0997B;opacity:.4;flex-shrink:0;">—</span>Don't Waste Your Life</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.45);padding:6px 0;border-bottom:0.5px solid rgba(255,255,255,0.06);display:flex;gap:8px;"><span style="color:#F0997B;opacity:.4;flex-shrink:0;">—</span>Every Good Endeavor</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.45);padding:6px 0;border-bottom:0.5px solid rgba(255,255,255,0.06);display:flex;gap:8px;"><span style="color:#F0997B;opacity:.4;flex-shrink:0;">—</span>Perspectives On The Christian Movement</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.45);padding:6px 0;border-bottom:0.5px solid rgba(255,255,255,0.06);display:flex;gap:8px;"><span style="color:#F0997B;opacity:.4;flex-shrink:0;">—</span>From Jerusalem to Irian Jaya</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.45);padding:6px 0;border-bottom:0.5px solid rgba(255,255,255,0.06);display:flex;gap:8px;"><span style="color:#F0997B;opacity:.4;flex-shrink:0;">—</span>Christian Mission in the Modern World</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.45);padding:6px 0;border-bottom:0.5px solid rgba(255,255,255,0.06);display:flex;gap:8px;"><span style="color:#F0997B;opacity:.4;flex-shrink:0;">—</span>Ecclesiology: The Comics</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.45);padding:6px 0;border-bottom:0.5px solid rgba(255,255,255,0.06);display:flex;gap:8px;"><span style="color:#F0997B;opacity:.4;flex-shrink:0;">—</span>Eschatology: The Comics</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.45);padding:6px 0;display:flex;gap:8px;"><span style="color:#F0997B;opacity:.4;flex-shrink:0;">—</span>The Universe Next Door</div>
+        </div>
+        <div style="margin-top:12px;font-size:11px;color:#F0997B;opacity:.55;">+ More titles across all 4 levels</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="background:var(--off-white);padding:88px 48px;">
+  <div class="section-inner">
+    <div style="max-width:560px;margin:0 auto;text-align:center;">
+      <p class="eyebrow" style="text-align:center;">Join Us</p>
+      <h2 class="stitle" style="text-align:center;">Begin Your <em>Triple School</em> Journey</h2>
+      <p style="font-size:14px;color:var(--text-muted);line-height:1.8;margin-bottom:32px;">Triple School is open to everyone at IM Mission. Come grow with us — as a whole person, for a whole life, in all directions for God's Kingdom.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <a href="https://koreayjk.github.io/immission/#support" class="btn-primary">Partner With IM Mission</a>
+        <a href="https://koreayjk.github.io/immission/" style="background:transparent;color:var(--navy);font-size:13px;padding:12px 28px;border-radius:4px;text-decoration:none;border:0.5px solid rgba(4,44,83,0.3);transition:all 0.2s;display:inline-block;" onmouseover="this.style.background='rgba(4,44,83,0.06)'" onmouseout="this.style.background='transparent'">← Back to IM Mission</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-col">
+      <p class="footer-col-title">IM Mission</p>
+      <p>International Mission (IM선교회)</p>
+      <p>Korean Mission · Mission Korea · Nations Mission</p>
+      <p style="margin-top:8px;">Tel: 042.223.2414</p>
+      <a href="http://www.imministry.co.kr">www.imministry.co.kr</a>
+    </div>
+    <div class="footer-col">
+      <p class="footer-col-title">Triple School</p>
+      <a href="#overview">Overview</a>
+      <a href="#three-schools">Three Schools</a>
+      <a href="#in-depth">Gospel School</a>
+      <a href="#in-depth">Disciple School</a>
+      <a href="#calling-detail">Calling School</a>
+      <a href="#books">Curriculum Books</a>
+    </div>
+    <div class="footer-col">
+      <p class="footer-col-title">IM Mission</p>
+      <a href="https://koreayjk.github.io/immission/#about">About &amp; Vision</a>
+      <a href="https://koreayjk.github.io/immission/#ministry">Core Ministry</a>
+      <a href="https://koreayjk.github.io/immission/#history">Our History</a>
+      <a href="https://koreayjk.github.io/immission/#support">Support Us</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 International Mission (IM선교회). All rights reserved.</p>
+    <p>Matthew 24:14</p>
+  </div>
+</footer>
+
+</body>
+</html>
