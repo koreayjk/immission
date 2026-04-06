@@ -622,7 +622,7 @@
   // ── 영상 불러오기 ──
   function getYoutubeId(url) { const m=url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]+)/); return m?m[1]:null; }
   function renderVideoCard(v) {
-    const vid=getYoutubeId(v.youtube_url); const thumb=vid?`https://img.youtube.com/vi/${vid}/hqdefault.jpg`:'';
+    const vid=getYoutubeId(v.youtube_url); const thumb=vid?`https://img.youtube.com/vi/${vid}/0.jpg`:'';
     return `<div class="v-card" onclick="window.open('${v.youtube_url}','_blank')"><div class="v-thumb">${thumb?`<img src="${thumb}" alt="${v.title||''}" loading="lazy">`:''}
       <div class="v-play"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="18" fill="rgba(255,255,255,0.9)"/><polygon points="14,11 28,18 14,25" fill="#042C53"/></svg></div></div>
       <div class="v-body"><p class="v-title">${v.title||'Video'}</p><p class="v-date">${v.date||''}</p></div></div>`;
